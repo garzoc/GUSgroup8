@@ -1,0 +1,3 @@
+function connectToNodeJS() {
+  alert("Hello!")
+}
