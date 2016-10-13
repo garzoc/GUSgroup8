@@ -10,14 +10,18 @@ format_to_string(V) ->
 			_->V
 	end.
 	
-	
+json_number_format(V) ->
+	case is_number(V) of
+			true->format_to_string(V);
+			false->"\""++format_to_string(V)++"\""
+	end.	
 	
 	
 				
-toJson([{Var,X}])->format_to_string(Var)++":"++format_to_string(X)++"}";
-toJson([{Var,X}|L])->format_to_string(Var)++":"++format_to_string(X)++","++toJson(L);
-toJson(_)->throw(formart_Error).
-list_to_json(L)->"{"++toJson(L).
+toJson([{Var,X}])->"\""++format_to_string(Var)++"\":"++json_number_format(X)++"}";
+toJson([{Var,X}|L])->"\""++format_to_string(Var)++"\":"++json_number_format(X)++","++toJson(L);
+toJson(_)->throw(format_Error).
+list_to_json(L)->list_to_atom("{"++toJson(L)).
 
 
 %toJson(Name,Li)-> string:join(string:join(atom_to_list(Name),"{"),string:join(toJson(Li),"}")).
