@@ -6,15 +6,18 @@
 
 test() ->
     %V = value_generator:create_value(),
-    R = io_lib:format("~p",[value_generator:create_value()]),
-    lists:flatten(R),
+    %R = io_lib:format("~p",[value_generator:create_value()]),
+    R = value_generator:create_value(),
+    %lists:flatten(R),
+    io:format("print test ~p~n", [R]),
+    V = json:list_to_json(R),
 
     {ok, C} = emqttc:start_link([
                 {host, "broker.hivemq.com"},
                 {port, 1883},
                 {client_id, <<"testClientEmanuel">>}]),
     emqttc:subscribe(C, <<"group8">>, 0),
-    emqttc:publish(C, <<"group8">>,list_to_binary(R)), %fun value_generator:create_value/0
+    emqttc:publish(C, <<"group8">>,atom_to_binary(V,utf8)), %fun value_generator:create_value/0
     receive
         {publish, Topic, Payload} ->
             io:format("Message Received from ~s: ~p~n", [Topic, Payload])
@@ -22,5 +25,4 @@ test() ->
         5000 ->
             io:format("Error: receive timeout!~n")
     end,
-    emqttc:disconnect(C).  
-
+    emqttc:disconnect(C).
