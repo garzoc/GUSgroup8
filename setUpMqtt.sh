@@ -15,12 +15,24 @@ mkdir mqttSender
 # cd in to the new directory
 cd mqttSender
 
+cd /usr/bin/
+
 # Download and install rebar3
-git clone https://github.com/erlang/rebar3.git;
-cd rebar3;
-./bootstrap
-PATH=~/bin/:$PATH;
-chmod +x rebar3;
+#echo download rebar;
+#git clone https://github.com/erlang/rebar3.git;
+#echo rebar downloaded;
+#cd rebar3;
+#echo in rebar;
+#./bootstrap
+#echo runned bootstrap;
+#PATH=~usr/bin/:$PATH;
+#PATH=~:$PATH
+#echo runned path;
+#$PATH;
+#chmod +x rebar3;
+#echo runned mod;
+
+wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3;
 
 # Create a new Rebar project
 rebar3 new lib emqtcc_Group8;
