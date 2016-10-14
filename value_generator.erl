@@ -8,8 +8,10 @@
 generate_value() -> random:uniform(1023).
 
 create_value() ->
-  Value = erlang:integer_to_list(generate_value()),
+  Value = generate_value(),
   Id = "temp",
-  Time = integer_to_list(erlang:system_time()),
-  string:join([Id,Value,Time], "|").
+  Time = erlang:system_time(),
+  [{"value", Value},{"id", Id},{"time", Time}].
+%	string:join([Id,Value,Time], "|").
 
+%{"id", Id},{"time", Time}
