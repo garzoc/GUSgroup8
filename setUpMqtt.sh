@@ -18,23 +18,10 @@ cd mqttSender
 cd /usr/bin/
 
 # Download and install rebar3
-#echo download rebar;
-#git clone https://github.com/erlang/rebar3.git;
-#echo rebar downloaded;
-#cd rebar3;
-#echo in rebar;
-#./bootstrap
-#echo runned bootstrap;
-#PATH=~usr/bin/:$PATH;
-#PATH=~:$PATH
-#echo runned path;
-#$PATH;
-#chmod +x rebar3;
-#echo runned mod;
-
 wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3;
 
-# Create a new Rebar project
+# Create a new Rebar project in the home directory.
+cd /home
 rebar3 new lib emqtcc_Group8;
 
 # cd in to the new project directory
@@ -46,31 +33,13 @@ echo {erl_opts, [debug_info]}. >> rebar.config
 echo {deps, [{emqttc, {git, '"https://github.com/emqtt/emqttc.git"', {ref, '"815ebeca103025bbb5eb8e4b2f6a5f79e1236d4c"'}}}]}. >> rebar.config
 rebar3 upgrade
 
-# Create a test file that can connect to a mqtt broker
-cat > mqttSender.erl <<EOF
--module(mqttSender).
--export([test/1]).
+# Clone the Erlang-Dev branch from github
+git clone https://github.com/garzoc/GUSgroup8.git;
 
-test(Payload) ->
-    {ok, C} = emqttc:start_link([
-                {host, "broker.hivemq.com"},
-                {port, 1883},
-                {client_id, <<"testClientEmanuel">>}]),
-    emqttc:subscribe(C, <<"group8">>, 0),
-    emqttc:publish(C, <<"group8">>, <<"This is a test!">>),
-    receive
-        {publish, Topic, Payload} ->
-            io:format("Message Received from ~s: ~p~n", [Topic, Payload])
-    after
-        5000 ->
-            io:format("Error: receive timeout!~n")
-    end,
-    emqttc:disconnect(C).  
-
-EOF
-
-#Compile the mqttSender.erl file
+#Compile the .erl files
 erlc mqttSender.erl
+erlc json.erl
+erlc value_generator.erl
 
 #Start the rebar shell
 rebar3 shell
