@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# cd to the directory where you want to have your project
+
 # Add this file into that directory.
 # then type chmod +x setUpMqtt.sh
 # the type ./setUpMqtt  to start the installation
@@ -10,18 +10,22 @@
 # sudo apt-get install erlang-ic (If erlang is not installed run this to install) 
 
 # Make a Directory
-mkdir mqttSender
 
-# cd in to the new directory
-cd mqttSender
 
+# cd in to the  directory usr/bin/.
 cd /usr/bin/
 
-# Download and install rebar3
+# Download and install rebar3.
 wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3;
 
 # Create a new Rebar project in the home directory.
 cd /home
+
+# create a new directory called mqttSender and cd in to it.
+mkdir mqttSender
+cd mqttSender
+
+# create a new rebar3 project.
 rebar3 new lib emqtcc_Group8;
 
 # cd in to the new project directory
