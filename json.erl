@@ -1,30 +1,36 @@
 -module(json).
 
--export([list_to_json/1]).
+-export([decode/1]).
 
+%takes a list and foramts each value to a string and then merge the string
+list_to_string([X])->json_value_format(X);
+list_to_string([X|Xs])->json_value_format(X)++","++list_to_string(Xs).
+
+%formats value into strings
 format_to_string(V) ->
-	case {is_atom(V),is_integer(V),is_float(V)} of
-			{true,_,_}->atom_to_list(V);
-			{_,true,_}->integer_to_list(V);
-			{_,_,true}->float_to_list(V,[{decimals,10},compact]);
-			_->V
+	if
+		is_atom(V)->atom_to_list(V);
+		is_integer(V)->integer_to_list(V);
+		is_float(V)->float_to_list(V,[{decimals,10},compact]);
+		is_list(V)-> "["++list_to_string(V)++"]";
+		true->V
 	end.
-	
-json_number_format(V) ->
-	case is_number(V) of
+		
+%Prevent numbers or lists from looking like a string when they later are formatted to an atom
+json_value_format(V) ->
+	case is_number(V) orelse is_list(V) of
 			true->format_to_string(V);
 			false->"\""++format_to_string(V)++"\""
 	end.	
 	
 	
 				
-toJson([{Var,X}])->"\""++format_to_string(Var)++"\":"++json_number_format(X)++"}";
-toJson([{Var,X}|L])->"\""++format_to_string(Var)++"\":"++json_number_format(X)++","++toJson(L);
+toJson([{Var,X}])->"\""++format_to_string(Var)++"\":"++json_value_format(X)++"}";
+toJson([{Var,X}|L])->"\""++format_to_string(Var)++"\":"++json_value_format(X)++","++toJson(L);
 toJson(_)->throw(format_Error).
-list_to_json(L)->list_to_atom("{"++toJson(L)).
+decode(L)->list_to_atom("{"++toJson(L)).
 
+%Test
 
-%toJson(Name,Li)-> string:join(string:join(atom_to_list(Name),"{"),string:join(toJson(Li),"}")).
-
-%toJson(Li)-> atom_to_list(Name)++"{"++toJson(Li)++"}".
-%json:list_to_json([{v,10},{t,l}]).
+%json:decode([{v,10},{t,l}]).
+%json:decode([{v,10},{[10,[10,10]],[10,l,[l,10,[k,v]]]}]).
