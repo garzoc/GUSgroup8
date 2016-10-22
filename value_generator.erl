@@ -3,15 +3,22 @@
 
 -module(value_generator).
 -author("Emanuel Mellblom").
--export([generate_value/0, create_value/0]).
+-export([generate_value/0, create_value/0, generate_id/0]).
 
 generate_value() -> random:uniform(1023).
 
 create_value() ->
   Value = generate_value(),
-  Id = "temp",
+  Id = generate_id(),
   Time = erlang:system_time(),
   [{"value", Value},{"id", Id},{"time", Time}].
-%	string:join([Id,Value,Time], "|").
 
-%{"id", Id},{"time", Time}
+generate_id() ->
+	X = random:uniform(5),
+		case X of
+			1 -> "temp";
+			2 -> "co2";
+			3 -> "barometric preassure";
+			4 -> "humidity";
+			5 -> "wind"
+		end.
