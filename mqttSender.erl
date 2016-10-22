@@ -10,7 +10,7 @@ test() ->
     R = value_generator:create_value(),
     %lists:flatten(R),
     io:format("print test ~p~n", [R]),
-    V = json:list_to_json(R),
+    V = json:decode(R),
 
     {ok, C} = emqttc:start_link([
                 {host, "broker.hivemq.com"},
@@ -25,4 +25,5 @@ test() ->
         5000 ->
             io:format("Error: receive timeout!~n")
     end,
-    emqttc:disconnect(C).
+    emqttc:disconnect(C),
+    test().
