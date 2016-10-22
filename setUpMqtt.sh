@@ -38,7 +38,7 @@ echo {deps, [{emqttc, {git, '"https://github.com/emqtt/emqttc.git"', {ref, '"815
 rebar3 upgrade
 
 # Clone the Erlang-Dev branch from github
-git clone https://github.com/garzoc/GUSgroup8.git;
+git clone -b Erlang-Dev https://github.com/garzoc/GUSgroup8.git;
 
 #Compile the .erl files
 erlc mqttSender.erl
