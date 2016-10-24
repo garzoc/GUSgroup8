@@ -11,14 +11,14 @@ create_value() ->
   Value = generate_value(),
   Id = generate_id(),
   Time = erlang:system_time(),
-  [{"value", Value},{"id", Id},{"time", Time}].
+  [{"value", Value},{"sensorID", Id},{"timestamp", Time}].
 
 generate_id() ->
 	X = random:uniform(5),
 		case X of
 			1 -> "temp";
 			2 -> "co2";
-			3 -> "barometric preassure";
+			3 -> "barometric pressure";
 			4 -> "humidity";
-			5 -> "wind"
+			5 -> "wind speed"
 		end.
