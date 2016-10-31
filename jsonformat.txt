@@ -1,8 +1,9 @@
-% This should be sent to the servar:
-% Username : string
-% GroupName (Sensor package) :string
-% Sensor Name :string
-% Sensorvalue : double or int
-% Time : unix timestamp
-% Unit, "Sensortype" : measure unit(mps, C, bar. etc..)
-% ?Login token : timestamp
+% This should be sent to the server:
+{
+	{user, <username>},
+	{group, <group>},
+	{value, <value>},
+	{sensorID, <sensor name>
+	{timestamp, <unix timestamp>},
+	{unit, <sensor unit>}
+}
