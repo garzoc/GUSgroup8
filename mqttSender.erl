@@ -7,7 +7,8 @@
 test() ->
     %V = value_generator:create_value(),
     %R = io_lib:format("~p",[value_generator:create_value()]),
-    R = value_generator:create_value(),
+    R = sensor_json_formatter:sensor_to_json(
+		value_generator:generate_value(), testSensor1),
     %lists:flatten(R),
     io:format("print test ~p~n", [R]),
     V = json:decode(R),
