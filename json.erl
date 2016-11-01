@@ -6,13 +6,23 @@
 list_to_string([X])->json_value_format(X);
 list_to_string([X|Xs])->json_value_format(X)++","++list_to_string(Xs).
 
+isAlphaNum(String) -> 
+    case re:run(String, "^[0-9A-Za-z]+$") of
+        {match, _} -> true;
+        nomatch    -> false
+    end.
+%json:decode([{"k",49},{"l",40}]).
 %formats value into strings
 format_to_string(V) ->
 	if
+		
 		is_atom(V)->atom_to_list(V);
 		is_integer(V)->integer_to_list(V);
 		is_float(V)->float_to_list(V,[{decimals,10},compact]);
-		is_list(V)-> "["++list_to_string(V)++"]";
+		is_list(V)-> case isAlphaNum(V) of 
+				false->"["++list_to_string(V)++"]";
+				true->V 
+			end;
 		true->V
 	end.
 		
@@ -30,7 +40,10 @@ toJson([{Var,X}|L])->"\""++format_to_string(Var)++"\":"++json_value_format(X)++"
 toJson(_)->throw(format_Error).
 decode(L)->list_to_atom("{"++toJson(L)).
 
-%Test
+%decode_toString
 
+%Test
+%io:format(json:decode([{v,10},{t,l}])).
 %json:decode([{v,10},{t,l}]).
 %json:decode([{v,10},{[10,[10,10]],[10,l,[l,10,[k,v]]]}]).
+%json:decode([{"v",10},{t,l}]).%unsolved
