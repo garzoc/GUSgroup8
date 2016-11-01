@@ -7,7 +7,7 @@ list_to_string([X])->json_value_format(X);
 list_to_string([X|Xs])->json_value_format(X)++","++list_to_string(Xs).
 
 isAlphaNum(String) when is_list(String) ->
-    case re:run(String, "^[0-9A-Za-z]+$") of
+    case re:run(String, "^[0-9A-Za-z\s]+$") of
         {match, _} -> true;
         nomatch    -> false;
 		_->false
