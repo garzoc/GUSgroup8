@@ -6,12 +6,14 @@
 list_to_string([X])->json_value_format(X);
 list_to_string([X|Xs])->json_value_format(X)++","++list_to_string(Xs).
 
-isAlphaNum(String) -> 
+isAlphaNum(String) when is_list(String) ->
     case re:run(String, "^[0-9A-Za-z]+$") of
         {match, _} -> true;
         nomatch    -> false;
 		_->false
-    end.
+    end;
+	
+isAlphaNum(_)->false.
 %json:decode([{"k",49},{"l",40}]).
 %formats value into strings
 format_to_string(V) ->
@@ -26,10 +28,10 @@ format_to_string(V) ->
 			end;
 		true->V
 	end.
-		
+%json:decode([{"value",49},{"id","co2"},{"timestapm",23432}]).		
 %Prevent numbers or lists from looking like a string when they later are formatted to an atom
 json_value_format(V) ->
-	case (is_number(V) orelse is_list(V)) andalso isAlphaNum(format_to_string(V))=/=true of
+	case (is_number(V) orelse is_list(V)) andalso (isAlphaNum(V)==false) of
 			true->format_to_string(V);
 			false->"\""++format_to_string(V)++"\""
 	end.	
