@@ -1,21 +1,43 @@
- var mod=module.exports;
+var mod=module.exports;
 var sender;
-var userList=new Array;
+
+var packageList=new Array;
+
  mod.init=function(host){
 	 sender=host;
-	 host.permFunc="onMessage";
+	 global.setStaticFunction("onMessage",host);
+	 global.setVIP_user(host);
+	 
 };
 
 mod.newUser=function(user){
-	userList.push(user);
-	//global.relay('{"name":"mooo","type":"webServ"}');
+	
 }
+var counter=0;
 
 mod.onMessage=function(data,client){
-	console.log(data+ "\n heloo govenor");
+	//console.log(data.value+ "\n heloo govenor");
+	counter++;
+	console.log(counter);
+	var userList=global.getClients(client);
+	//1478179373
 	
-	for(var i=0;i<userList.length;i++){
-		userList[i].send('cnsl::{"msg":"'+data.value+'"}');
-		
+	var msg=global.objectToString(data);
+	console.log(msg);
+	for(var i=0;i<userList.length;i++){	
+		//console.log(msg);
+		userList[i].send('cnsl::'+msg);
 	}
+}
+
+mod.onClose=function(client){
+	if(client.isVIP){
+		console.log("host left turning of server "+client.verfication.serverId);
+		var userList=global.getClients(client.verfication);
+		for(var i=0;i<userList.length;i++){	
+		//console.log(msg);
+			global.kickUser(userList[i]);
+		}
+	}
+	
 }
