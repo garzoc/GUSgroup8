@@ -10,7 +10,7 @@ sensor_to_json(Value, SensorName) ->
 			{group, config_accesser:get_field(group)},
 			{value, Value},
 			{sensorID, SensorName},
-			{timestamp, erlang:system_time()},
+			{timestamp, erlang:system_time(seconds)},
 			{unit, config_accesser:get_sensor_unit(SensorName)}
 		],
 	json:decode(M).
