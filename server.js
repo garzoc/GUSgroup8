@@ -291,9 +291,9 @@ server.msgRelay=function(message,client){
 		server[dir.func](dir.arg,client);
 	}else{
 		if(client.staticFunction===undefined){
-			server.processList[client.serverId].module[dir.func];
+			server.processList[client.serverId].module[dir.func](dir.arg,global.cloneObject(client));
 		}else{
-			server.processList[client.serverId].module[client.staticFunction](dir.arg,client);
+			server.processList[client.serverId].module[client.staticFunction](dir.arg,global.cloneObject(client));
 		}
 	}
 }
@@ -315,6 +315,7 @@ socket.on('connection', function conn(client) {
 	});
   
   client.on('close',function close(){
+	  //console.log("closingf");
 	  server.leaveProcess(this);
 	  //this=undefined;
 	});
