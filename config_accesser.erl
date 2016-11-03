@@ -4,7 +4,7 @@
 
 % Open config file and find the value associated with the key
 get_field(Field) ->
-	{ok, File} =  file:consult("user.conf"),
+	{ok, File} =  file:consult("config.conf"),
 	get_field(Field, File).
 
 get_field(Field, [{A, B}|_]) when A == Field-> 

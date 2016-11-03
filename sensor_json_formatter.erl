@@ -4,6 +4,7 @@
 -author("Isar Arason").
 -export([sensor_to_json/2, sensor_to_broker_json/2, test/0]).
 
+% Returns a json message to be sent to the relay server.
 sensor_to_json(Value, SensorName) ->
 	M = [
 			{package, config_accesser:get_field(package)},

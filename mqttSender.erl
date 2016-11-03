@@ -1,30 +1,51 @@
 -module(mqttSender).
--export([test/0]).
+-export([start/0, publish/1, test/0]).
 
 %qos_opt_test() ->
  %  ?assertEqual({0, emqttc:qos_opt(value_generator:create_value()})).
 
-test() ->
-    %V = value_generator:create_value(),
-    %R = io_lib:format("~p",[value_generator:create_value()]),
-    R = sensor_json_formatter:sensor_to_json(
-		value_generator:generate_value(), testSensor1),
-    %lists:flatten(R),
-    io:format("print test ~p~n", [R]),
-    V = json:decode(R),
+start() ->
+	Pid = spawn_link(mqttSender, init, []),
+	register(mqttSender, Pid).
 
-    {ok, C} = emqttc:start_link([
-                {host, "broker.hivemq.com"},
-                {port, 1883},
+%%% Something is broken beyond this point %%%
+init() ->
+	io:format("Initialized", []),
+    {ok, Link} = emqttc:start_link([
+                {host, config_accesser:get_field(broker_host)},
+                {port, config_accesser:get_field(broker_port)},
                 {client_id, <<"testClientEmanuel">>}]),
-    emqttc:subscribe(C, <<"group8">>, 0),
-    emqttc:publish(C, <<"group8">>,atom_to_binary(V,utf8)), %fun value_generator:create_value/0
-    receive
-        {publish, Topic, Payload} ->
-            io:format("Message Received from ~s: ~p~n", [Topic, Payload])
-    after
-        5000 ->
-            io:format("Error: receive timeout!~n")
-    end,
-    emqttc:disconnect(C),
-    test().
+	
+	loop(Link).
+	
+loop(Link) ->
+	receive
+		{Package, User, Group, Message} ->
+			 
+			%%%% This is probably incorrect %%%
+			Topic = 
+				atom_to_list(Group) ++ "/" 
+				++ atom_to_list(User) ++ "/" 
+				++ atom_to_list(Package),
+			io:format("Test: ~p~n", [Topic]),
+			% Needs verification
+			emqttc:publish(Link,
+				Topic,
+				Message),
+			loop(Link)
+	end.
+
+	
+publish(Message) ->
+	mqttSender ! Message.
+	
+	
+ 
+test() ->
+	start(),
+	timer:sleep(1000),
+	publish(
+		{testSensorPackage, default, group8, 
+			sensor_json_formatter:sensor_to_json(1, testSensor1)}
+		).
+	
