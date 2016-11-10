@@ -1,5 +1,31 @@
 var mqtt = require('mqtt');
 var mqttClient  = mqtt.connect('mqtt://broker.hivemq.com');
+/*var express = require('express');
+var app = express();
+var bodyParser     = require('body-parser');
+app.use(bodyParser.json()); 
+
+// parse application/vnd.api+json as json
+app.use(bodyParser.json({ type: 'application/vnd.api+json' })); 
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true })); 
+app.listen(8080);
+app.use(express.static(__dirname + './public')); 
+require("./app/routes.js")(app);
+exports=module.exports=app;
+*/
+
+/*var http=require('http');
+http.createServer(function(request,response){
+	response.writeHead(200);
+	console.log("hi");
+	response.write("damn i'm awesome\n");
+	response.end();
+
+}).listen(8081);*/
+
+
+
 
 /*
  * MQTT Client
@@ -174,7 +200,7 @@ server.initProcess= function(context,client){
 			
 	}
 	
-	if(typeof(server.processList[newServerId].module["init"]) === "function"){
+	if(server.processList[newServerId].module!==undefined&&typeof(server.processList[newServerId].module["init"]) === "function"){
 		server.processList[newServerId].module["init"](global.cloneObject(client));
 	}else{
 		console.log("missing init funcion");
