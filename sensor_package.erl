@@ -16,7 +16,6 @@ start() ->
 	
 	
 loop() ->
-	
 	receive
 		{{SensorName, Unit, Pin}, Value} ->
 			io:format("Received: ~p~n", [{{SensorName, Unit, Pin}, Value}]),
@@ -27,5 +26,3 @@ loop() ->
 		5000 -> 
 			io:format("Received: ~p~n", [timeout])
 	end.
-
-% [{testSensor1,c,0},{testSensor2,f,1},{testSensor3,k,2}]

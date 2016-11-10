@@ -1,6 +1,7 @@
 -module(config_accesser).
 -author("Isar Arason").
--export([get_field/1, get_sensor_unit/1, get_sensor_pin/1, test/0]).
+-export([get_field/1, get_sensor_unit/1, get_sensor_pin/1, 
+	get_sensor_interval/1, test/0]).
 
 % Open config file and find the value associated with the key
 get_field(Field) ->
@@ -34,10 +35,10 @@ get_sensor_pin(SensorName, [_|Ls]) ->
 get_sensor_interval(SensorName) ->
 	get_sensor_interval(SensorName, get_field(sensors)).
 
-get_sensor_pin(SensorName, [{N, _, _, I}|_]) when SensorName == N ->
+get_sensor_interval(SensorName, [{N, _, _, I}|_]) when SensorName == N ->
 	I;
 	
-get_sensor_pin(SensorName, [_|Ls]) ->
+get_sensor_interval(SensorName, [_|Ls]) ->
 	get_sensor_pin(SensorName, Ls).
 	
 test() -> 
