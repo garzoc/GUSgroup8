@@ -8,21 +8,23 @@
 % 	(just reading random data for now)
 
 start() ->
+	% Open socket -- used in loop
+	sensor_package_sender:start(),
+	% Grab all sensors
 	Sensors = config_accesser:get_field(sensors),
+	% Create a sensor monitor for each sensor
 	Pid = spawn_link(fun () -> loop() end),
 	[
-		spawn_link(sensor_monitor, start, [Pid, {Name, Unit, Pin}, Interval]) || {Name, Unit, Pin, Interval} <- Sensors
+		spawn_link(sensor_monitor, start, [Pid, Name, Pin, Interval]) || {Name, _, Pin, Interval} <- Sensors
 	].
 	
-	
+
+% Receive messages from the sensor monitors
 loop() ->
 	receive
-		{{SensorName, Unit, Pin}, Value} ->
-			io:format("Received: ~p~n", [{{SensorName, Unit, Pin}, Value}]),
-			loop();
-		_ -> 
-			io:format("Received: ~p~n", [undefined])
-	after
-		5000 -> 
-			io:format("Received: ~p~n", [timeout])
+		{SensorName, Value} ->
+			sensor_package_sender:send(
+			sensor_json_formatter:sensor_to_json(Value, SensorName)
+			),
+			loop()
 	end.
