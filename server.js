@@ -1,6 +1,6 @@
-var mqtt = require('mqtt');
-var mqttClient  = mqtt.connect('mqtt://broker.hivemq.com');
-/*var express = require('express');
+//var mqtt = require('mqtt');
+//var mqttClient  = mqtt.connect('mqtt://broker.hivemq.com');
+var express = require('express');
 var app = express();
 var bodyParser     = require('body-parser');
 app.use(bodyParser.json()); 
@@ -13,7 +13,7 @@ app.listen(8080);
 app.use(express.static(__dirname + './public')); 
 require("./app/routes.js")(app);
 exports=module.exports=app;
-*/
+
 
 /*var http=require('http');
 http.createServer(function(request,response){
@@ -30,7 +30,7 @@ http.createServer(function(request,response){
 /*
  * MQTT Client
  * */
-mqttClient.on('connect', function () {
+/*mqttClient.on('connect', function () {
   mqttClient.subscribe('group8');
   //mqttClient.publish('group8', 'Hello mqtt');
 });
@@ -43,7 +43,7 @@ mqttClient.on('message', function (topic, message) {
 		client.send(message.toString());
 	});
 	//mqttClient.end();
-});
+});*/
 
 
 //modules ==============================================
@@ -184,7 +184,7 @@ server.initProcess= function(context,client){
 	//console.log(server.processList.length+"  hello");
 
 	try{
-		if(client.serverId!=undefined)throw(error);
+		if(client.serverId!=undefined)throw("user already subscribed to module");
 		client.serverId=newServerId;
 		server.processList[newServerId].module=require(modPath+'/'+context.type+'.js');
 		console.log("the module "+context.type+" is running smoothly on process "+ process.name);
@@ -193,7 +193,7 @@ server.initProcess= function(context,client){
 	}
 	catch(e){
 		
-			console.log("user already part of server");
+			console.log(e);
 			client.send('cnsl::{"msg":"process '+context.type+' does not exists"}');
 			//client.send("serverMessages::You were kicked from the server");
 			//server.leaveProcess(client);
@@ -303,7 +303,17 @@ server.decode=function(stringData){
 		data.func=buffer[0];
 		data.arg=JSON.parse(buffer[1]);
 	}else{
-		data.arg=JSON.parse(buffer);
+		buffer=buffer[0].split("}{");
+		if(buffer.constructor===Array && buffer.length>1){
+			data.arg=[];
+			data.arg.push(buffer[0]+"}");
+			for(var i=1;i<buffer.length-1;i++){
+				data.arg.push("{"+buffer[i]+"}");
+			}
+			data.arg.push("{"+buffer[buffer.length-1]);
+		}else{
+			data.arg=JSON.parse(buffer);
+		}
 	}
 	return data;
 }

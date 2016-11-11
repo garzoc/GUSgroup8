@@ -15,19 +15,29 @@ mod.newUser=function(user){
 }
 var counter=0;
 
-mod.onMessage=function(data,client){
-
-	//counter++;
-	//console.log(counter);
+function msg(data,client){
 	var userList=global.getClients(client);
-	//1478179373
-	
 	var msg=global.objectToString(data);
 	console.log(msg);
 	for(var i=0;i<userList.length;i++){	
 		//console.log(msg);
 		userList[i].send('cnsl::'+msg);
 	}
+	
+}
+
+mod.onMessage=function(data,client){
+
+	//counter++;
+	//console.log(counter);
+	
+	//1478179373
+	if(data.constructor===Array && data.length>1) {
+			for(var i in data) msg(i,client);
+	}else{
+		msg(data,client);
+	}
+	
 }
 
 mod.onClose=function(client){
