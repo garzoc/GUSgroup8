@@ -7,10 +7,13 @@
 % to the Node.js server as well as the mqtt Broker.
 start() -> start(?defPort).
 start(Port) -> 
-	register(nodeprocess, connect_to_nodeServer()),
-	register(mqttprocess, connect_to_broker()), %broker
+	io:fwrite("Initializing\n"),
+	spawn_link(fun() -> register(nodeprocess, connect_to_nodeServer()) end),
+	io:fwrite("Connected to node server\n"),
+	spawn_link(fun() -> register(mqttprocess, connect_to_broker()) end), %broker
+	io:fwrite("Connected to broker\n"),
 	case gen_tcp:listen(Port,[binary,{packet,0},{active,false}]) of
-		{ok,Listensocket} -> server_loop(Listensocket);
+		{ok,Listensocket} -> spawn_link(fun() -> server_loop(Listensocket) end);
 		{error,Reason} -> exit({Port,Reason})
 	end.
 
