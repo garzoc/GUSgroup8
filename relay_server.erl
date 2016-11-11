@@ -8,9 +8,9 @@
 start() -> start(?defPort).
 start(Port) -> 
 	io:fwrite("Initializing\n"),
-	spawn_link(fun() -> register(nodeprocess, connect_to_nodeServer()) end),
+	register(nodeprocess, spawn_link(fun() -> connect_to_nodeServer()end)),
 	io:fwrite("Connected to node server\n"),
-	spawn_link(fun() -> register(mqttprocess, connect_to_broker()) end), %broker
+	register(mqttprocess, spawn_link(fun() -> connect_to_broker() end)), %broker
 	io:fwrite("Connected to broker\n"),
 	case gen_tcp:listen(Port,[binary,{packet,0},{active,false}]) of
 		{ok,Listensocket} -> spawn_link(fun() -> server_loop(Listensocket) end);
@@ -19,12 +19,14 @@ start(Port) ->
 
 %% main server loop which waiting for the next connection, spawn child to handle it.	
 server_loop(Listensocket) ->
+	io:format("hej"),
 	case gen_tcp:accept(Listensocket) of
 		{ok,Socket} ->
 			%io:format("hej"),
 			spawn(fun()-> process(Socket) end),
 			server_loop(Listensocket);
 		{error,Reason} ->
+			io:format("error in server loop~p", [Reason]),
 			exit({accept,Reason})
 	end.
 
@@ -78,16 +80,11 @@ connect_to_broker() ->
 % Send data to the Mqtt broker
 send_to_broker(Broker, Data) -> 	
     	emqttc:subscribe(Broker, <<"group8">>, 0),
-    	emqttc:publish(Broker, <<"group8">>,Data), 
-    		receive
-        		{publish, Topic, Payload} ->
-           		io:format("Message Received from ~s: ~p~n", [Topic, Payload])
-   			after
-        		1000 ->
-            	io:format("Error: receive timeout!~n")
-   			 end.
-
-
-
-
-
+    	emqttc:publish(Broker, <<"group8">>,Data).
+    	%	receive
+        %		{publish, Topic, Payload} ->
+        % 		io:format("Message Received from ~s: ~p~n", [Topic, Payload])
+   		%	after
+        %		5 ->
+        %   	io:format("Error: receive timeout!~n")
+   		%	 end.
