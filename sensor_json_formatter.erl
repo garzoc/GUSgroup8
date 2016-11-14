@@ -13,6 +13,7 @@ sensor_to_json(Value, SensorName) ->
 			{value, Value},
 			{sensorID, SensorName},
 			{timestamp, erlang:system_time(seconds)},
-			{sensor_unit, config_accesser:get_sensor_unit(SensorName)}
+			{sensor_unit, config_accesser:get_sensor_unit(SensorName)},
+			{smart_mirror_ID, config_accesser:get_field(smart_mirror_ID)}
 		],
 	json:decode(M).
