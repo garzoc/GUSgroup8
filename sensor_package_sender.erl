@@ -1,6 +1,6 @@
 -module(sensor_package_sender).
 -author("Isar Arason").
--export([start/0, send_message/1]).
+-export([start/0, send_message/1, connect/0]).
 
 % Starts a process using IP and port in config file
 start() -> 
@@ -56,19 +56,24 @@ dispatch(Message, Socket) ->
 
 % Tries to set up a connection until success
 connect() ->
+	connect(config_accesser:get_field(relays)).
+
+% Loop through list of IPs
+connect([{IP, Port} | Ls]) ->
 	case gen_tcp:connect(
-	config_accesser:get_field(relay_ip),
-	config_accesser:get_field(relay_port),
+	IP, Port,
 	[{mode, binary}]) of
 		{ok, Socket} ->
 			io:fwrite("Package | Successfully reconnected.~n", []),
 			Socket;
 		{error, Reason} ->
-			io:fwrite("Package | Failed to connect, retrying.~p~n", [Reason]),
+			io:fwrite("Package | Failed to connect to ~p, retrying. ~p~n", [{IP, Port}, Reason]),
 			timer:sleep(2000),
-			connect()
-	end.
+			connect(Ls)
+	end;
 
+% Retry
+connect([]) -> connect().
 
 
 
