@@ -8,7 +8,7 @@ start_link() ->
 
 init([]) ->
 	
-	% Open socket -- used in loop
+	% Start sender process
 	link(sensor_package_sender:start()),
 	% Grab all sensors
 	Sensors = config_accesser:get_field(sensors),

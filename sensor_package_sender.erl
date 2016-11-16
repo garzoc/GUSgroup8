@@ -21,21 +21,14 @@ start() ->
 
 % Queues message for sending
 send_message(Message) -> 
-	sender ! Message.
+	sender ! {msg, Message}.
 
-% Receives messages. 
+% Buffers incoming messages
 % If (now - LastTime) is 5 or greater, send queued messages
 loop(Message, LastTime, Socket) ->
-	
 	% Add message to existing message
 	receive
-		% Get rid of pesky TCP messages
-		{_, _} -> 
-			NewMessage = Message,
-			loop(Message, LastTime, Socket);
-
-		M -> 
-			io:fwrite("Package | Received sensor message: ~p~n", [M]),
+		{msg, M} -> 
 			NewMessage = Message ++ [M]
 	end,
 	
@@ -69,7 +62,6 @@ connect() ->
 	[{mode, binary}]) of
 		{ok, Socket} ->
 			io:fwrite("Package | Successfully reconnected.~n", []),
-			timer:sleep(2000),
 			Socket;
 		{error, Reason} ->
 			io:fwrite("Package | Failed to connect, retrying.~p~n", [Reason]),
