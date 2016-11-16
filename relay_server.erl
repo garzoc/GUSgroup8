@@ -1,17 +1,32 @@
 -module(relay_server).
 -export([start/0, start/1, process/1, connect_to_nodeServer/0, connect_to_broker/0]).
+%-export([start_link/0, init/1]).
 -define(defPort,1337).
 -define(pFrequency,110).
+-behaviour(gen_server).
+
+start_link() ->
+     gen_server:start_link(?MODULE, [], []).
+
+init([]) ->
+	start(),
+	{ok, started}.
+
 
 % Start the relay server with the port defined above as defPort, also starts the connection
 % to the Node.js server as well as the mqtt Broker.
+
 start() -> start(?defPort).
 start(Port) -> 
 	io:fwrite("Initializing\n"),
-	register(nodeprocess, spawn_link(fun() -> connect_to_nodeServer()end)),
+
+	%test supervisor
+	%supervisor:start_child(relay_supervisor, fun() -> connect_to_nodeServer()end),
+	supervisor:start_child(relay_supervisor, register(nodeprocess, spawn(fun() -> connect_to_nodeServer()end))),
+	%register(nodeprocess, spawn_link(fun() -> connect_to_nodeServer()end)),
 	io:fwrite("Connected to node server\n"),
-	register(mqttprocess, spawn_link(fun() -> connect_to_broker() end)), %broker
-	io:fwrite("Connected to broker\n"),
+	%register(mqttprocess, spawn_link(fun() -> connect_to_broker() end)), %broker
+	%io:fwrite("Connected to broker\n"),
 	case gen_tcp:listen(Port,[binary,{packet,0},{active,false}]) of
 		{ok,Listensocket} -> spawn_link(fun() -> server_loop(Listensocket) end);
 		{error,Reason} -> exit({Port,Reason})
@@ -19,7 +34,7 @@ start(Port) ->
 
 %% main server loop which waiting for the next connection, spawn child to handle it.	
 server_loop(Listensocket) ->
-	io:format("hej"),
+	io:format("New connection made"),
 	case gen_tcp:accept(Listensocket) of
 		{ok,Socket} ->
 			%io:format("hej"),
@@ -41,7 +56,8 @@ do_recv(Socket) ->
   case gen_tcp:recv(Socket, 0) of
     {ok, Bin} -> 
     	nodeprocess!{ok, Bin}, %Send to Node.js
-    	mqttprocess!{ok, Bin}; %Send to broker
+    	%mqttprocess!{ok, Bin}; %Send to broker
+    	do_recv(Socket);
     {error, closed} -> exit(closed);
     {error, econnrefused} -> exit(colsed);
     {error, Reason} -> exit(Reason)

@@ -5,7 +5,7 @@
 -export([start_link/0, init/1]).
 
 start_link() ->
-	supervisor:start_link({global, ?MODULE}, ?MODULE, []).
+	supervisor:start_link({global, relay_server}, ?MODULE, []).
 
 init([]) ->
 	io:format("~p (~p) starting...~n", [{global, ?MODULE}, self()]),
@@ -22,7 +22,6 @@ init([]) ->
 
 	Type = worker,
 
-	% Spec of supervisor child
-	ChildSpecifications = {relayServerId, {relay_server_test, start, []}, Restart, Shutdown, Type, [relay_server]},
+	ChildSpecifications = {relayServerId, {relay_server, start, []}, Restart, Shutdown, Type, [relay_server]},
 
 	{ok, {Flags, [ChildSpecifications]}}.
