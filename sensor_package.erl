@@ -18,10 +18,6 @@ init([]) ->
 		spawn_link(sensor_monitor, start, [Pid, Name, Pin, Interval]) || {Name, _, Pin, Interval} <- Sensors
 	],
 	
-	spawn_link(fun() -> timer:sleep(5000), 
-		io:fwrite("+++++++++++++++ Crashing~n"),
-		io:fwrite("~p~", 1/0) end),
-	
 	{ok, sensor_packageState}.
 	
 % Receive messages from the sensor monitors
