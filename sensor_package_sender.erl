@@ -4,7 +4,7 @@
 
 % Starts a process using IP and port in config file
 start() -> 
-	case whereis(sender) of
+	case whereis(package_sender) of
 		undefined ->
 			Pid = spawn_link(fun() -> 
 					loop(
@@ -13,22 +13,22 @@ start() ->
 					connect()
 				) end
 			),
-			register(sender, Pid);
+			register(package_sender, Pid);
 		_ ->
-			Pid = sender
+			Pid = package_sender
 	end,
 	Pid.
 
 % Queues message for sending
 send_message(Message) -> 
-	sender ! {msg, Message}.
+	package_sender ! {pkg_msg, Message}.
 
 % Buffers incoming messages
 % If (now - LastTime) is 5 or greater, send queued messages
 loop(Message, LastTime, Socket) ->
 	% Add message to existing message
 	receive
-		{msg, M} -> 
+		{pkg_msg, M} -> 
 			NewMessage = Message ++ [M]
 	end,
 	

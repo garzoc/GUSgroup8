@@ -1,40 +1,32 @@
 -module(relay_server).
--export([start/0, start/1, process/1, connect_to_nodeServer/0, connect_to_broker/0]).
-%-export([start_link/0, init/1]).
--define(defPort,1337).
--define(pFrequency,110).
--behaviour(gen_server).
-
-start_link() ->
-     gen_server:start_link(?MODULE, [], []).
-
-init([]) ->
-	start(),
-	{ok, started}.
-
+-export([init/1, start_link/0]).
+-behavior(gen_server).
 
 % Start the relay server with the port defined above as defPort, also starts the connection
 % to the Node.js server as well as the mqtt Broker.
+start_link() -> 
+     gen_server:start_link(?MODULE, [], []).	
+	 
+init([]) ->
 
-start() -> start(?defPort).
-start(Port) -> 
-	io:fwrite("Initializing\n"),
+	link(relay_node_sender:start()),
+	
+	register(mqttprocess, spawn_link(fun() -> connect_to_broker() end)), %broker
 
-	%test supervisor
-	%supervisor:start_child(relay_supervisor, fun() -> connect_to_nodeServer()end),
-	supervisor:start_child(relay_supervisor, register(nodeprocess, spawn(fun() -> connect_to_nodeServer()end))),
-	%register(nodeprocess, spawn_link(fun() -> connect_to_nodeServer()end)),
-	io:fwrite("Connected to node server\n"),
-	%register(mqttprocess, spawn_link(fun() -> connect_to_broker() end)), %broker
-	%io:fwrite("Connected to broker\n"),
-	case gen_tcp:listen(Port,[binary,{packet,0},{active,false}]) of
-		{ok,Listensocket} -> spawn_link(fun() -> server_loop(Listensocket) end);
-		{error,Reason} -> exit({Port,Reason})
-	end.
+	{ok,Listensocket} = gen_tcp:listen(
+		config_accesser:get_field(relay_listen_port),
+		[binary,{packet,0},{active,false}]),
+	
+	spawn_link(fun() -> server_loop(Listensocket) end),
+	
+	spawn_link(fun() ->
+		timer:sleep(10000),
+		io:fwrite("~p", 1/0) end),
+	
+	{ok, relay_serverState}.
 
 %% main server loop which waiting for the next connection, spawn child to handle it.	
 server_loop(Listensocket) ->
-	io:format("New connection made"),
 	case gen_tcp:accept(Listensocket) of
 		{ok,Socket} ->
 			%io:format("hej"),
@@ -55,20 +47,12 @@ process(Socket) ->
 do_recv(Socket) ->
   case gen_tcp:recv(Socket, 0) of
     {ok, Bin} -> 
-    	nodeprocess!{ok, Bin}, %Send to Node.js
-    	%mqttprocess!{ok, Bin}; %Send to broker
-    	do_recv(Socket);
+    	relay_sender!{ok, Bin}, %Send to Node.js
+    	mqttprocess!{ok, Bin}; %Send to broker
     {error, closed} -> exit(closed);
     {error, econnrefused} -> exit(colsed);
     {error, Reason} -> exit(Reason)
   end.
-
-% Loop for messages to send to Node server
-nodejs_loop(Socket) ->
-	receive
-		{ok, Bin} -> gen_tcp:send(Socket, Bin), nodejs_loop(Socket);
-		_ -> nodejs_loop(Socket)
-	end.
 
 % Loop for messages to send to Mqtt broker
 mqtt_loop(Broker) ->
@@ -76,15 +60,7 @@ mqtt_loop(Broker) ->
 		{ok, Bin} -> send_to_broker(Broker, Bin);
 		_ -> mqtt_loop(Broker)
 	end.
-
-% Connect to the node.js server
-connect_to_nodeServer() -> 
-	{ok, NodeSocket} = gen_tcp:connect({172,20,10,3}, 1337, [{mode, binary}]),
-    Initmessage = "initProcess::{\"name\":\"hej\",\"type\":\"package\"}",
-    gen_tcp:send(NodeSocket, Initmessage),
-    nodejs_loop(NodeSocket).
-    %do_recv(Socket, NodeSocket,0).
-
+	
 % Connect to the mqtt broker
 connect_to_broker() -> 
 	{ok, Broker} = emqttc:start_link([

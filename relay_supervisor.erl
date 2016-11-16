@@ -4,12 +4,16 @@
 
 -export([start_link/0, init/1]).
 
+
 start_link() ->
-	supervisor:start_link({global, relay_server}, ?MODULE, []).
+     {ok, Pid} = supervisor:start_link({local, ?MODULE}, 
+          ?MODULE, []),
+     {ok, Pid}.
 
 init([]) ->
-	io:format("~p (~p) starting...~n", [{global, ?MODULE}, self()]),
-
+	io:format("~p (~p) starting...~n", [{global, relay_server}, self()]),
+	
+	
 	RestartStrategy = one_for_one,
 	MaxRestarts = 3,
 	MaxSecondsBetweenRestarts = 5,
@@ -22,6 +26,7 @@ init([]) ->
 
 	Type = worker,
 
-	ChildSpecifications = {relayServerId, {relay_server, start, []}, Restart, Shutdown, Type, [relay_server]},
+	% Spec of supervisor child
+	ChildSpecifications = {relay_server, {relay_server, start_link, []}, Restart, Shutdown, Type, [relay_server]},
 
 	{ok, {Flags, [ChildSpecifications]}}.
