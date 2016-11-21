@@ -59,19 +59,15 @@ mqtt_loop(Broker) ->
 % Connect to the mqtt broker
 connect_to_broker() -> 
 	{ok, Broker} = emqttc:start_link([
-		{host, "broker.hivemq.com"},
-		{port, 1883},
-		{client_id, <<"testClientEmanuel">>}]),
+		%{host, "broker.hivemq.com"},
+		{host, config_accesser:get_field(broker_host),
+		{port, config_accesser:get_field(broker_port)},
+		%{port, 1883},
+		%{client_id, <<"testClientEmanuel">>}]),
+		{client_id, <<config_accesser:get_field(user)>>}]),
 		mqtt_loop(Broker).
 
 % Send data to the Mqtt broker
 send_to_broker(Broker, Data) -> 	
-    	emqttc:subscribe(Broker, <<"group8">>, 0),
-    	emqttc:publish(Broker, <<"group8">>,Data).
-    	%	receive
-        %		{publish, Topic, Payload} ->
-        % 		io:format("Message Received from ~s: ~p~n", [Topic, Payload])
-   		%	after
-        %		5 ->
-        %   	io:format("Error: receive timeout!~n")
-   		%	 end.
+    	emqttc:publish(Broker, <<config_accesser:get_field(group)>>,Data).
+ 
