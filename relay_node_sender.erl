@@ -42,12 +42,13 @@ dispatch(Message, Socket) ->
 	end.
 
 % Tries to set up a connection until success
-connect() ->
-	case gen_tcp:connect(
-	config_accesser:get_field(node_ip),
-	config_accesser:get_field(node_port),
-	[{mode, binary}]) of
+	connect() ->
+	case gen_tcp:connect(config_accesser:get_field(node_ip),
+		config_accesser:get_field(node_port),
+		[{mode, binary}]) of
 		{ok, Socket} ->
+			Initmessage = "initProcess::{\"name\":\"hej\",\"type\":\"package\"}",
+			gen_tcp:send(NodeSocket, Initmessage),
 			io:fwrite("Relay | Successfully reconnected.~n", []),
 			Socket;
 		{error, Reason} ->
@@ -55,6 +56,7 @@ connect() ->
 			timer:sleep(2000),
 			connect()
 	end.
+
 
 
 
