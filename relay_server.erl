@@ -19,17 +19,12 @@ init([]) ->
 	
 	spawn_link(fun() -> server_loop(Listensocket) end),
 	
-	spawn_link(fun() ->
-		timer:sleep(10000),
-		io:fwrite("~p", 1/0) end),
-	
 	{ok, relay_serverState}.
 
 %% main server loop which waiting for the next connection, spawn child to handle it.	
 server_loop(Listensocket) ->
 	case gen_tcp:accept(Listensocket) of
 		{ok,Socket} ->
-			%io:format("hej"),
 			spawn(fun()-> process(Socket) end),
 			server_loop(Listensocket);
 		{error,Reason} ->

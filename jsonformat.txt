@@ -1,9 +1,0 @@
-% This should be sent to the server:
-{
-	{user, <username>},
-	{group, <group>},
-	{value, <value>},
-	{sensorID, <sensor name>
-	{timestamp, <unix timestamp>},
-	{unit, <sensor unit>}
-}

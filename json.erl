@@ -1,6 +1,6 @@
 -module(json).
 
--export([decode/1]).
+-export([encode/1]).
 
 %takes a list and foramts each value to a string and then merge the string
 list_to_string([X])->json_value_format(X);
@@ -14,7 +14,7 @@ isAlphaNum(String) when is_list(String) ->
     end;
 	
 isAlphaNum(_)->false.
-%json:decode([{"k",49},{"l",40}]).
+%json:encode([{"k",49},{"l",40}]).
 %formats value into strings
 format_to_string(V) ->
 	if
@@ -28,7 +28,7 @@ format_to_string(V) ->
 			end;
 		true->V
 	end.
-%json:decode([{"value",49},{"id","co2"},{"timestapm",23432}]).		
+%json:encode([{"value",49},{"id","co2"},{"timestapm",23432}]).		
 %Prevent numbers or lists from looking like a string when they later are formatted to an atom
 json_value_format(V) ->
 	case (is_number(V) orelse is_list(V)) andalso (isAlphaNum(V)==false) of
@@ -41,12 +41,12 @@ json_value_format(V) ->
 toJson([{Var,X}])->"\""++format_to_string(Var)++"\":"++json_value_format(X)++"}";
 toJson([{Var,X}|L])->"\""++format_to_string(Var)++"\":"++json_value_format(X)++","++toJson(L);
 toJson(_)->throw(format_Error).
-decode(L)->list_to_atom("{"++toJson(L)).
+encode(L)->list_to_atom("{"++toJson(L)).
 
-%decode_toString
+%encode_toString
 
 %Test
-%io:format(json:decode([{v,10},{t,l}])).
-%json:decode([{v,10},{t,l}]).
-%json:decode([{v,10},{[10,[10,10]],[10,l,[l,10,[k,v]]]}]).
-%json:decode([{"v",10},{t,l}]).%unsolved
+%io:format(json:encode([{v,10},{t,l}])).
+%json:encode([{v,10},{t,l}]).
+%json:encode([{v,10},{[10,[10,10]],[10,l,[l,10,[k,v]]]}]).
+%json:encode([{"v",10},{t,l}]).%unsolved
