@@ -3,7 +3,7 @@ var sender;
 
 var packageList=new Array;
 
- mod.init=function(host){
+mod.init=function(host){
 	 sender=host;
 	 global.setStaticFunction("onMessage",host);
 	 global.setVIP_user(host);

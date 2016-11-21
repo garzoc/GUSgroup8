@@ -7,8 +7,27 @@ var morgan = require('morgan');
 var express = require('express');
 var config = require('./config');
 var bodyParser     = require('body-parser');
-///var sockets = require('sockets')
+var server = require('./app/modules/sockets.js').init(8000,1337);
 var app = express();
+
+//console.log(server);
+//var client=server.msgRelay("aas");
+
+var modJoin=new Object;
+modJoin.serverId=0;
+
+var modInit=new Object;
+modInit.name="test";
+modInit.type="package";
+
+var client=server.dummy();
+var client1=server.dummy();
+client.send("hej");
+client1.send("hej1");
+console.log(client);
+console.log(client1);
+server.initProcess(modInit,client);
+server.joinProcess(modJoin,client);
 
 //bodyparser setup
 app.use(bodyParser.json());
@@ -28,9 +47,10 @@ app.use(function(req, res, next) {
 //log all requests to console
 app.use(morgan('dev'));
 
+
 //connect to our database
-mongoose.Promise = global.Promise; //problem with mongoose promises
-mongoose.connect(config.database);
+//mongoose.Promise = global.Promise; //problem with mongoose promises
+mongoose.connect("mongodb://localhost:27017/test");
 
 //set static files location
 //that are used for frontend (like images,views,libs)
@@ -50,4 +70,4 @@ app.get('*', function(req, res) {
 
 app.listen(config.port);
 
-}
+
