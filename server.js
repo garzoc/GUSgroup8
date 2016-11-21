@@ -57,6 +57,16 @@ global.msg=function(where,object,client){
 }
 
 
+global.crud={
+	Post:function(path,func){	
+		
+	},
+	Get:function(path,func){
+		
+	}
+	
+}
+
 //interface functions=============================
 
 global.cloneObject=function(obj){
@@ -172,23 +182,22 @@ console.log("server running on port "+socketPort);
 //module handlers=============================================
 server.initProcess= function(context,client){
 	//console.log(context.name);
-	var newServerId=server.processList.length;
 	
 	
-	server.processList.push(new Object);
-	server.processList[newServerId].name=context.name;
-	
-	var process=server.processList[newServerId];
-	process.clients=[client];
-	client.localId=0;
 	//console.log(server.processList.length+"  hello");
 
 	try{
 		if(client.serverId!=undefined)throw("user already subscribed to module");
-		client.serverId=newServerId;
-		server.processList[newServerId].module=require(modPath+'/'+context.type+'.js');
-		console.log("the module "+context.type+" is running smoothly on process "+ process.name);
-		client.send('cnsl::{"msg":"successfully initiated process '+context.type+'!"}');
+			var newServerId=server.processList.length;
+			server.processList.push(new Object);
+			server.processList[newServerId].name=context.name;
+			var process=server.processList[newServerId];
+			process.clients=[client];
+			client.localId=0;
+			client.serverId=newServerId;
+			server.processList[newServerId].module=require(modPath+'/'+context.type+'.js');
+			console.log("the module "+context.type+" is running smoothly on process "+ process.name);
+			client.send('cnsl::{"msg":"successfully initiated process '+context.type+'!"}');
 		client.inProcess=true;
 	}
 	catch(e){
@@ -295,41 +304,64 @@ server.listProcesses=function(client){
 
 //message processor==============================================0
 server.decode=function(stringData){
-	var buffer=stringData.split("::");
+	var packetStruct=stringData.split("::");
 	var data={};
 	//console.log(buffer.constructor===Array);
 	//console.log(buffer);
-	if(buffer.constructor===Array && buffer.length>1) {
-		data.func=buffer[0];
-		data.arg=JSON.parse(buffer[1]);
+	if(packetStruct.constructor===Array && packetStruct.length>1) {
+		data.func=packetStruct[0];
+		data.arg=JSON.parse(packetStruct[1]);
 	}else{
-		buffer=buffer[0].split("}{");
+		var packetData=packetStruct[0];//string made up of several json obejcts
+		buffer=packetData.split("}{");
 		if(buffer.constructor===Array && buffer.length>1){
+			//console.log(packetData+"    god natt=====================================0");
 			data.arg=[];
 			data.arg.push(buffer[0]+"}");
 			for(var i=1;i<buffer.length-1;i++){
 				data.arg.push("{"+buffer[i]+"}");
 			}
 			data.arg.push("{"+buffer[buffer.length-1]);
+			//console.log(data.arg[0]+"    god natt");
+			
+			if(packetData.substr(0,1)!=="{"){
+				data.arg.splice(0,1);
+			}
+			if(packetData.substr(packetData.length-1,packetData.length)!=="}"){
+				data.arg.splice(data.arg.length-1,1);
+			}
+			
 		}else{
 			data.arg=JSON.parse(buffer);
 		}
 	}
+	
 	return data;
 }
 
+
+//relay messages to modules
 server.msgRelay=function(message,client){
-	var dir=server.decode(message.toString());
-	
+	var dir;
+	try{
+		dir=server.decode(message.toString())
+	}catch(err){
+		console.log(err);
+		dir=null;
+	}
+	if(dir===null)return null;
 	//console.log(this.inProcess);
-	
+		
+		
+		
 	if(!(client.inProcess===true)){
-		server[dir.func](dir.arg,client);
+	server[dir.func](dir.arg,client);
 	}else{
 		if(client.staticFunction===undefined){
 			server.processList[client.serverId].module[dir.func](dir.arg,global.cloneObject(client));
 		}else{
-			server.processList[client.serverId].module[client.staticFunction](dir.arg,global.cloneObject(client));
+			console.log(dir.arg+"    god natt");
+			server.processList[client.serverId].module[client.staticFunction](dir.arg ,global.cloneObject(client));
 		}
 	}
 }
@@ -371,7 +403,7 @@ socket.on('close', function close() {
 
 
 
-//tcp socket handlers===================================
+//tcp socket event handlers===================================
 var tcpServer=net.createServer(function(socket) {
 	//socket.write('Echo server\r\n');
 	//socket.pipe(socket);
@@ -405,7 +437,7 @@ var tcpServer=net.createServer(function(socket) {
 
 
 tcpServer.on('close',function(client){
-	console.log("majmaj");
+	console.log("closing tcp");
 	
 });
 
@@ -413,7 +445,17 @@ tcpServer.listen(1337);
 console.log("tcp listening on port 1337");
 
 
-
+var Test=require("html");
+var a=new Test("h1");
+var b=new Test("h1");
+//var bb=new Test;
+var c=a.createElement("ds");
+var d=b.createElement("ds");
+console.log(Test);
+console.log(a);
+console.log(b);
+console.log(c);
+console.log(d);
 
 //var host=new Object;
 //host.send=function(msg){console.log(msg)};
