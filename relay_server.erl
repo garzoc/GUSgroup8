@@ -19,12 +19,17 @@ init([]) ->
 	
 	spawn_link(fun() -> server_loop(Listensocket) end),
 	
+	spawn_link(fun() ->
+		timer:sleep(10000),
+		io:fwrite("~p", 1/0) end),
+	
 	{ok, relay_serverState}.
 
 %% main server loop which waiting for the next connection, spawn child to handle it.	
 server_loop(Listensocket) ->
 	case gen_tcp:accept(Listensocket) of
 		{ok,Socket} ->
+			%io:format("hej"),
 			spawn(fun()-> process(Socket) end),
 			server_loop(Listensocket);
 		{error,Reason} ->
@@ -60,14 +65,14 @@ mqtt_loop(Broker) ->
 connect_to_broker() -> 
 	{ok, Broker} = emqttc:start_link([
 		%{host, "broker.hivemq.com"},
-		{host, config_accesser:get_field(broker_host),
+		{host, atom_to_binary(config_accesser:get_field(broker_host), utf8)},
 		{port, config_accesser:get_field(broker_port)},
 		%{port, 1883},
 		%{client_id, <<"testClientEmanuel">>}]),
-		{client_id, <<config_accesser:get_field(user)>>}]),
+		{client_id, config_accesser:get_field(user)}]),
 		mqtt_loop(Broker).
 
 % Send data to the Mqtt broker
 send_to_broker(Broker, Data) -> 	
-    	emqttc:publish(Broker, <<config_accesser:get_field(group)>>,Data).
+    	emqttc:publish(Broker, atom_to_binary(config_accesser:get_field(group), utf8),Data).
  
