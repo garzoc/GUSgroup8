@@ -56,7 +56,14 @@ dispatch(Message, Socket) ->
 
 % Tries to set up a connection until success
 connect() ->
-	connect(config_accesser:get_field(relays)).
+	% Split list and join swapped pieces
+	% Approaches equal number of connections per valid relay
+	Relays = config_accesser:get_field(relays),
+	Index = trunc(rand:uniform() * length(Relays)),
+	{A, B} = lists:split(
+				Index,
+				Relays),
+	connect(B ++ A).
 
 % Loop through list of IPs
 connect([{IP, Port} | Ls]) ->
