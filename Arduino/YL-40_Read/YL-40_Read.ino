@@ -31,13 +31,13 @@ void setup() {
   Wire.begin();
 }
 
-// Send byte to retrieve channel
+// Send char of value to retrieve channel
 void loop()
 {       
   if (Serial.available() > 0) 
   {
     // read the incoming byte:
-    incomingByte = Serial.read();
+    char incomingByte = Serial.read();
 
     switch(incomingByte)
     {
