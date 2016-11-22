@@ -1,6 +1,6 @@
 -module(basic_example).
 
--export([test/0, open/0, close/1, send/1, listen/0]).
+-export([test/0, get_channel/2, open/0, close/1, send/1, listen/0]).
 
 test() ->
 	{ok, SerialPort} = open(),
