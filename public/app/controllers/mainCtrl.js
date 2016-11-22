@@ -5,12 +5,16 @@ angular.module('mainCtrl', [])
 	var vm = this;
 
 	// get info if a person is logged in
-	vm.loggedIn = Auth.isLoggedIn();
+	
+	
 
+	//vm.loggedIn = Auth.isLoggedIn();
+	
 	// check to see if a user is logged in on every request
 	$rootScope.$on('$routeChangeStart', function() {
 		vm.loggedIn = Auth.isLoggedIn();
-
+		//console.log(vm.loggedIn);
+		if(!vm.loggedIn)$location.path('/login');
 		// get user information on page load
 		Auth.getUser()
 			.then(function(data) {
@@ -22,7 +26,7 @@ angular.module('mainCtrl', [])
 	// function to handle login form
 	vm.doLogin = function() {
 		vm.processing = true;
-
+		
 		// clear the error
 		vm.error = '';
 

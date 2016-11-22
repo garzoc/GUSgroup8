@@ -45,7 +45,7 @@ app.use(function(req, res, next) {
 });
 
 //log all requests to console
-app.use(morgan('dev'));
+//app.use(morgan('dev'));
 
 
 //connect to our database

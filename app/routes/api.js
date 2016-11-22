@@ -64,8 +64,9 @@ module.exports = function(app, express) {
 		//decode token
 		if (token) {
 			//verifies secret and checks exp
+			
 			jwt.verify(token, superSecret, function(err, decoded) {
-
+				
 				if(err) {
 					res.status(403).send({
 						success: false,
@@ -79,6 +80,7 @@ module.exports = function(app, express) {
 			});
 
 		}else {
+			
 			//if there is no token
 			//return a response of 403 (access forbidden) and an error message
 			res.status(403).send({
@@ -95,6 +97,7 @@ module.exports = function(app, express) {
 	//test route to make sure that everything is working
 	//accessed at GET http://localhost:8080/api
 	apiRouter.get('*', function(req, res) {
+		console.log("hej");
 		res.json({message: 'welcome to our api'});
 	});
 	return apiRouter;
