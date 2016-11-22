@@ -35,7 +35,7 @@ sensor_unit: String,
 //var Gr8data = mongoose.model('Gr8data', packageSchema);
 
 
-//ADD FUNCTIONS FOR
+//ADD MODEL FUNCTIONS
 
 //Exported to require on app.js so it could be refrenced from another schema.
 module.exports = mongoose.model('Package', packageSchema);
