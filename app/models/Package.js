@@ -22,10 +22,10 @@ value: {
   required: true,
 }
 
-sensorID: [{
+sensorID: {
   type: String,
   required: true,
-  }],
+  },
 
 timestamp: Number,
 sensor_unit: String,
