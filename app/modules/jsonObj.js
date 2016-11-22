@@ -33,6 +33,12 @@ module.exports={
 	
 	},
 	
+	overwriteObject:function(a,b){
+		for(var k in b){
+			a[k]=b[k];
+		}
+	},
+	
 	
 	
 	matchObjectType:function(a,b){

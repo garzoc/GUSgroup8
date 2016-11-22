@@ -7,53 +7,73 @@ module.exports = function(){
 	var modPath="";
 	var newUserFunc="newUser";
 	processList=[];
+	var interface={
+		getClients:function(client){
+			if(verifiedClient(client)){
+				return processList[client.serverId].clients;
+			}else{
+				console.log("failed modified client client");
+			}
+			updateClient(client);
+		},
 	
 
+		setVIP_user:function(client){
+			if(verifiedClient(client)){
+				processList[client.serverId].clients[client.localId].isVIP=true;
+			}else{
+				console.log("failed modified client client");
+			}
+			updateClient(client);
+		},
 
-	//GLOBAL functions
-	global.getClients=function(client){
-		if(verifiedClient(client)){
-			return server.processList[client.serverId].clients;
-		}else{
-			console.log("failed modified client client");
-		}
-	}
+		kickUser:function(client){
+			if(verifiedClient(client)){
+				server.leaveProcess(client);
+			}else{
+				console.log("failed modified client client");
+			}
+			updateClient(client);
+		},
 
-	global.setVIP_user=function(client){
-		if(verifiedClient(client)){
-			processList[client.serverId].clients[client.localId].isVIP=true;
-		}else{
-			console.log("failed modified client client");
-		}
-	}
-
-	global.kickUser=function(client){
-		if(verifiedClient(client)){
-			server.leaveProcess(client);
-		}else{
-			console.log("failed modified client client");
-		}
-	}
-
-    global.setStaticFunction=function(func,client){
-    	//console.log("niti");
-    	if(json.matchObject(client,processList[client.serverId].clients[client.localId])){
-    		//console.log("success");
-    		processList[client.serverId].clients[client.localId].staticFunction=func;
-    	}else{
-    		console.log("fail");
-    	}
+		setStaticFunction:function(func,client){
+			//console.log("niti");
+			if(verifiedClient(client)){
+				//console.log("success");
+				processList[client.serverId].clients[client.localId].staticFunction=func;
+			}else{
+				console.log("failed modified client client");
+			}
+			updateClient(client);
+		},
+		
+		//dagerous allowing users to create functions will compromise data may work if only allowed to store variables
+		/*add_custom_attribute:function(name,value,client){
+			//console.log("niti");
+			if(verifiedClient(client)){
+				//console.log("success");
+				processList[client.serverId].clients[client.localId].attribute[name]=value;
+			}else{
+				console.log("failed modified client client");
+			}
+			updateClient(client);
+		}*/
+		
+    };
+    
+    function updateClient(client){
+    	client=json.overwriteObject(client,processList[client.serverId].clients[client.localId]);
     }
 
-    function verifiedClient(client){
+	function verifiedClient(client){
     	if(json.matchObject(client,processList[client.serverId].clients[client.localId])){
     		return true;
     	}
 
     	return false;
     }
-
-
+    
+    
 
 	
   //server.clientsInProcess=[];
@@ -102,7 +122,7 @@ module.exports = function(){
 	this.joinProcess=function(context,client){
 		//console.log(context.serverId);
 		//console.log(server.processList.length);
-		if(context.serverId<processList.length && processList.length>0){
+		if(context.serverId<processList.length && processList.length>0&&client.serverId===undefined){
 			client.serverId=context.serverId;
 			client.localId=processList[context.serverId].clients.length;
 			processList[context.serverId].clients.push(client);
@@ -115,8 +135,12 @@ module.exports = function(){
 			}
 
 		}else{
-			console.log("failed to join bad index -> "+context.serverId);
-			client.send('cnsl::{"msg":"no server with that id"}');
+			if(client.serverId!==undefined){
+				console.log("user already subscribed to process "+processList[client.serverId].name);
+			}else{
+				console.log("failed to join bad index -> "+context.serverId);
+				client.send('cnsl::{"msg":"no server with that id"}');
+			}
 		}
 	}
 	
@@ -224,7 +248,7 @@ module.exports = function(){
 		//console.log(this.inProcess);
 
 		if(!(client.inProcess===true)){
-		this[dir.func](dir.arg,client);
+			this[dir.func](dir.arg,client);
 		}else{
 			if(client.staticFunction===undefined){
 				processList[client.serverId].module[dir.func](dir.arg,json.cloneObject(client));
@@ -235,7 +259,7 @@ module.exports = function(){
 		}
 	}
 	
-	//test functions=================================
+	//test client=================================
 	this.dummy= function(){
 		return new function(){
 			var test="";
@@ -243,6 +267,9 @@ module.exports = function(){
 			this.inspect=function(){
 				return test;
 			}
+			
+			this.api=interface;
+			this.attribute={};
 		}
 	}
 	

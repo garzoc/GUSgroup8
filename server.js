@@ -27,7 +27,7 @@ client1.send("hej1");
 console.log(client);
 console.log(client1);
 server.initProcess(modInit,client);
-server.joinProcess(modJoin,client);
+server.joinProcess(modJoin,client1);
 
 //bodyparser setup
 app.use(bodyParser.json());

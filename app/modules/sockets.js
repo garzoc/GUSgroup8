@@ -82,9 +82,6 @@ module.exports={
 		console.log("tcp listening on port "+tcpPort);
 		
 		return new Server;
-	}
-	
-	
-		
+	}	
 }
 

@@ -5,13 +5,18 @@ var packageList=new Array;
 
 mod.init=function(host){
 	 sender=host;
-	 global.setStaticFunction("onMessage",host);
-	 global.setVIP_user(host);
+	 host.api.setStaticFunction("onMessage",host);
+	 host.api.setVIP_user(host);
+	 console.log(host.isVIP);
+	 //host.api.add_custom_attribute("test",function(){return processList},host);
+	// host.interface.getClients(host);
 	 
 };
 
 mod.newUser=function(user){
-	
+	//console.log(user.isVIP);
+	//console.log(user.api.getClients(user)[0].attribute.test());
+	//console.log(user.api.getClients(user)[0].isVIP);
 }
 var counter=0;
 
