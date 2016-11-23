@@ -1,5 +1,5 @@
 -module(relay_server).
--export([init/1, start_link/0]).
+-export([init/1, start_link/0,find_topic/1]).
 -behavior(gen_server).
 
 % Start the relay server with the port defined above as defPort, also starts the connection
@@ -72,7 +72,15 @@ connect_to_broker() ->
 		{client_id, config_accesser:get_field(user)}]),
 		mqtt_loop(Broker).
 
+% get the topic information from sensor data% 
+find_topic(Json) ->
+%The line below does not works since the output dataformat of json:decode is atom, could you switch it list/tuple$
+%"{sensor_package,PKG}, {user, USR}, {group, GRP},_,_,_,_,_"=atom_to_list(json:decode(Json)),
+[{sensor_package,PKG}, {user, USR}, {group, GRP},_,_,_,_,_]=Json,
+Topic = atom_to_list(GRP) ++ "/" ++ atom_to_list(USR) ++ "/" ++ atom_to_list(PKG),
+list_to_binary(Topic).
+
 % Send data to the Mqtt broker
 send_to_broker(Broker, Data) -> 	
-    	emqttc:publish(Broker, atom_to_binary(config_accesser:get_field(group), utf8),Data).
+    	emqttc:publish(Broker, Topic, Data).
  
