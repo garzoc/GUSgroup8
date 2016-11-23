@@ -31,29 +31,29 @@ void setup() {
   Wire.begin();
 }
 
-// Send char of value to retrieve channel
-void loop()
-{       
-  if (Serial.available() > 0) 
-  {
-    // read the incoming byte:
-    char incomingByte = Serial.read();
-
-    switch(incomingByte)
-    {
-      case 0:
-        Serial.write(getADC(PCF8591_ADC_CH0));
-        break;
-      case 1:
-        Serial.write(getADC(PCF8591_ADC_CH1));
-        break;
-      case 2:
-        Serial.write(getADC(PCF8591_ADC_CH2));
-        break;
-      case 3:
-        Serial.write(getADC(PCF8591_ADC_CH3));
-        break;
+void serialEvent() {
+  while (Serial.available()) {
+      // read the incoming byte:
+      char incomingByte = (char)Serial.read();
+  
+      Serial.println("Received byte: " + incomingByte);
+      switch(incomingByte)
+      {
+        case '0':
+          Serial.println(getADC(PCF8591_ADC_CH0));
+          break;
+        case '1':
+          Serial.println(getADC(PCF8591_ADC_CH1));
+          break;
+        case '2':
+          Serial.println(getADC(PCF8591_ADC_CH2));
+          break;
+        case '3':
+          Serial.println(getADC(PCF8591_ADC_CH3));
+          break;
+      }
     }
-  }
-  delay(200);
 }
+
+void loop() {}
+    
