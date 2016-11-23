@@ -20,10 +20,6 @@ send(SerialPort) ->
 
 get_channel(SerialPort, Num) ->
 	SerialPort ! {send, Num},
-	receive
-		{data, Bytes} ->
-			print_sensors(erl_parse(Bytes))
-	end.
 			
 print_sensors([L|Ls]) ->
 	{Name, Value} = L,
@@ -33,11 +29,9 @@ print_sensors([L|Ls]) ->
 print_list([]) -> ok.
   
 listen() ->
-  receive
-    % Receive data from the serial port on the caller's PID.
-    {data, Bytes} ->
-      io:format("~s", [Bytes]),
-      listen()
+	receive
+		{data, Bytes} ->
+			print_sensors(erl_parse(Bytes))
   after
     % Stop listening after 5 seconds of inactivity.
     5000 ->
