@@ -14,8 +14,15 @@ var UserSchema = new Schema({
   password: {
     type : String,
     required : true,
-    select: false } //select false means the password field wont be retrieved in json requests by default
+    select: false
+  }, //select false means the password field wont be retrieved in json requests by default
+  sensor_package: {
+    type  : [String]  // array of strings,populated by the internal IDS allocated by mongoose.
+    required : true
+  }
 });
+
+
 
 //model functions
 //hash the password
@@ -38,7 +45,6 @@ UserSchema.pre('save', function(next) {
 //method to compare a given password with the database hash
 UserSchema.methods.comparePassword = function(password) {
   var user = this;
-
   return bcrypt.compareSync(password, user.password);
 
 };
