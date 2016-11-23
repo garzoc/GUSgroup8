@@ -4,10 +4,7 @@
 
 test() ->
 	{ok, SerialPort} = open(),
-	io:printf("Ch0: ~p~n", get_channel(SerialPort, 0)),
-	io:printf("Ch1: ~p~n", get_channel(SerialPort, 1)),
-	io:printf("Ch2: ~p~n", get_channel(SerialPort, 2)),
-	io:printf("Ch3: ~p~n", get_channel(SerialPort, 3)).
+	spawn(fun() -> listen() end).
 
 open() ->
   SerialPort = serial:start([{open, "/dev/ttyUSB0"}, {speed, 115200}]),
@@ -25,9 +22,15 @@ get_channel(SerialPort, Num) ->
 	SerialPort ! {send, Num},
 	receive
 		{data, Bytes} ->
-			Bytes
+			print_sensors(erl_parse(Bytes))
 	end.
 			
+print_sensors([L|Ls]) ->
+	{Name, Value} = L,
+	io:fwrite("~p: ~p~n"),
+	print_sensors(Ls);
+	
+print_list([]) -> ok.
   
 listen() ->
   receive
