@@ -36,7 +36,7 @@ loop(Message, LastTime, Socket) ->
 	I = get_time() - LastTime,
 	if
 		I >= 5 andalso (Message =/= []) -> 
-			loop([], , dispatch(Message, Socket));
+			loop([], get_time(), dispatch(Message, Socket));
 		true ->
 			loop(NewMessage, LastTime, Socket)
 	end.
