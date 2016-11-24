@@ -21,7 +21,7 @@ loop() ->
 	receive
 		{SensorName, Value} ->
 			sensor_package_sender:send_message(
-			sensor_json_formatter:sensor_to_json(Value, SensorName)
+			sensor_json_formatter:sensor_to_json(binary_to_list(Value), SensorName)
 			),
 			loop()
 	end.
