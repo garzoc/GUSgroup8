@@ -27,7 +27,7 @@ byte getADC(byte config)
 }
   
 void setup() {
-  Serial.begin (115200);
+  Serial.begin (9600);
   Wire.begin();
 }
 
@@ -35,8 +35,7 @@ void serialEvent() {
   while (Serial.available()) {
       // read the incoming byte:
       char incomingByte = (char)Serial.read();
-  
-      Serial.println("Received byte: " + incomingByte);
+      
       switch(incomingByte)
       {
         case '0':
