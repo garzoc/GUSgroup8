@@ -9,7 +9,7 @@ start() ->
 			Pid = spawn_link(fun() -> 
 					loop(
 					"", 
-					erlang:system_time(seconds),
+					get_time(),
 					connect()
 				) end
 			),
@@ -33,10 +33,10 @@ loop(Message, LastTime, Socket) ->
 	end,
 	
 	% Check time difference and dispatch if exceeded
-	I = erlang:system_time(seconds) - LastTime,
+	I = get_time() - LastTime,
 	if
 		I >= 5 andalso (Message =/= []) -> 
-			loop([], erlang:system_time(seconds), dispatch(Message, Socket));
+			loop([], , dispatch(Message, Socket));
 		true ->
 			loop(NewMessage, LastTime, Socket)
 	end.
@@ -82,6 +82,9 @@ connect([{IP, Port} | Ls]) ->
 % Retry
 connect([]) -> connect().
 
+get_time() ->
+	{MegaSecs, Secs, _} = now(),
+	MegaSecs * 1000000 + Secs.
 
 
 
