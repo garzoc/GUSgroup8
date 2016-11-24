@@ -1,5 +1,8 @@
 var mod=module.exports;
 var sender;
+var pack = require('../moodels/Package.js');
+
+
 
 var packageList=new Array;
 
@@ -10,7 +13,13 @@ mod.init=function(host){
 	 console.log(host.isVIP);
 	 //host.api.add_custom_attribute("test",function(){return processList},host);
 	// host.interface.getClients(host);
-	 
+		var package = new pack(); 
+		package.user = "Test User";
+		package.group = "Group8";
+		package.value = 88;
+		package.sensorID = "Sensor 0";
+		package.unit = "%";
+		package.save();
 };
 
 mod.newUser=function(user){
@@ -30,6 +39,7 @@ function msg(data,client){
 	}
 	
 }
+
 
 mod.onMessage=function(data,client){
 
@@ -58,3 +68,8 @@ mod.onClose=function(client){
 	}
 	
 }
+
+//var Package = require('./app/models/Package');
+// var pack = new Package();
+
+// pack.save();
