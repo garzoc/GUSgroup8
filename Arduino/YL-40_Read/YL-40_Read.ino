@@ -27,14 +27,14 @@ byte getADC(byte config)
 }
   
 void setup() {
-  Serial.begin (115200);
+  Serial.begin (9600);
   Wire.begin();
 }
 
 void loop() {
   Serial.print("[{Light, " + (String)(getADC(PCF8591_ADC_CH0)) + 
-                "},{Heat, " + (String)(getADC(PCF8591_ADC_CH1)) + "}]");
-  delay(250);
+                "},{Heat, " + (String)(getADC(PCF8591_ADC_CH1)) + "}].");
+  delay(1000);
 }
 
 
