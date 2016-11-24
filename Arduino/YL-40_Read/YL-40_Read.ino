@@ -39,16 +39,16 @@ void serialEvent() {
       switch(incomingByte)
       {
         case '0':
-          Serial.println(getADC(PCF8591_ADC_CH0));
+          Serial.write(getADC(PCF8591_ADC_CH0));
           break;
         case '1':
-          Serial.println(getADC(PCF8591_ADC_CH1));
+          Serial.write(getADC(PCF8591_ADC_CH1));
           break;
         case '2':
-          Serial.println(getADC(PCF8591_ADC_CH2));
+          Serial.write(getADC(PCF8591_ADC_CH2));
           break;
         case '3':
-          Serial.println(getADC(PCF8591_ADC_CH3));
+          Serial.write(getADC(PCF8591_ADC_CH3));
           break;
       }
     }
