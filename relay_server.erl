@@ -65,11 +65,11 @@ mqtt_loop(Broker) ->
 connect_to_broker() -> 
 	{ok, Broker} = emqttc:start_link([
 		%{host, "broker.hivemq.com"},
-		{host, atom_to_binary(config_accesser:get_field(broker_host), utf8)},
-		{port, config_accesser:get_field(broker_port)},
+		{host, relay_config_accesser:get_field(broker_host)},
+		{port, relay_config_accesser:get_field(broker_port)},
 		%{port, 1883},
 		%{client_id, <<"testClientEmanuel">>}]),
-		{client_id, config_accesser:get_field(user)}]),
+		{client_id, relay_config_accesser:get_field(user)}]),
 		mqtt_loop(Broker).
 
 % get the topic information from sensor data% 

@@ -43,12 +43,14 @@ dispatch(Message, Socket) ->
 
 % Tries to set up a connection until success
 	connect() ->
-	case gen_tcp:connect(config_accesser:get_field(node_ip),
+	%io:format("hej"),
+	%io:format("test relay node ip: ", [relay_config_accesser:get_field(node_ip)]),
+	case gen_tcp:connect(relay_config_accesser:get_field(node_ip),
 		config_accesser:get_field(node_port),
 		[{mode, binary}]) of
 		{ok, Socket} ->
 			Initmessage = "initProcess::{\"name\":\"hej\",\"type\":\"package\"}",
-			gen_tcp:send(NodeSocket, Initmessage),
+			gen_tcp:send(Socket, Initmessage),
 			io:fwrite("Relay | Successfully reconnected.~n", []),
 			Socket;
 		{error, Reason} ->
