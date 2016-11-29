@@ -30,7 +30,7 @@ group: {
 
 value: {
   type: Number,
-  default: '0000',
+  default: 0,
   required: true,
   trim: true
 },
@@ -41,7 +41,7 @@ sensorID: {
   trim: true
   },
 
-  unit: {
+  unit_type: {
   type: String,
   required: 'Please enter unit type...',
   trim: true
@@ -52,19 +52,8 @@ timestamp: {
   default: Date.now(),
   required: true
 
-},
+}
 
-//'default' is default time the jason was saved to the DB.
-//`Date.now()` returns the current unix timestamp as a number
-created: {
-  type: Date,
-  required: true
-},
-
-sensor_unit: String,
-
-//http://stackoverflow.com/questions/10006218/which-schematype-in-mongoose-is-best-for-timestamp
-timestamp: true
 
   });
 
@@ -79,6 +68,45 @@ if (this.timestamp !== undefined){
   next();
 });
 
+/*
+//queries with packages
+PackageSchema.methods.range(query)= {
+  //query is a string that can only hold three different string values : hour, day, week
+  var pack = this;
+  var d = Date.now()
+  hour = d.getHour();
+
+
+  if (query == "hour") {
+  //remove quotes from timestamp
+  //pass timestamp to function
+function rangeHour(){
+	pack.find({
+		"timestamp": {$lt: d, $gt: d(hour - 1) }
+	})
+
+}
+}
+  else if (query == "day") {
+function rangeDay(){
+	pack.find({
+		"timestamp": {$lt: d, $gt: d(hour - 24) }
+	})
+
+}
+}
+  else if (query == "week") {
+
+
+function rangeWeek(){
+	pack.find({
+		"timestamp": {$lt: d, $gt: d(hour - 168) }
+	})
+
+}
+}
+}
+end of query functions */
 
 module.exports = mongoose.model('Package', PackageSchema);
 
@@ -92,19 +120,18 @@ module.exports = mongoose.model('Package', PackageSchema);
 // //connect
 // var Package = connection.model('Package', packageSchema);
 
-//Export 
+//Export
 
 
 //save
  // Jmsg.save(function (err) {
  //    if (err) return handleError(err);
  //    console.log(err, 'Uh oh! something went wrong: save failed ')
- //  }); 
+ //  });
 
 
-//need to test is this work! 
+//need to test is this work!
 // This should view the result from 5 days ago to the current date..to be aded to the rest of the queries.
 // var cutoff = new Date();
 // cutoff.setDate(cutoff.getDate()-5);
 // MyModel.find({modificationDate: {$lt: cutoff}}, function (err, docs) { ... });
-
