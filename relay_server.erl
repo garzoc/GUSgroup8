@@ -11,13 +11,13 @@ init([]) ->
 
 	link(relay_node_sender:start()),
 	
-	register(mqttprocess, spawn(fun() -> connect_to_broker() end)), %broker
+	%register(mqttprocess, spawn_link(fun() -> connect_to_broker() end)), %broker
 
 	{ok,Listensocket} = gen_tcp:listen(
 		config_accesser:get_field(relay_listen_port),
 		[binary,{packet,0},{active,false}]),
 	
-	spawn(fun() -> server_loop(Listensocket) end),
+	spawn_link(fun() -> server_loop(Listensocket) end),
 	
 	%spawn_link(fun() ->
 	%	timer:sleep(10000),
@@ -47,12 +47,14 @@ server_loop(Listensocket) ->
 do_recv(Socket) ->
   case gen_tcp:recv(Socket, 0) of
     {ok, Bin} -> 
-    	relay_sender!{ok, Bin}, %Send to Node.js
-    	mqttprocess!{ok, Bin}; %Send to broker
+    	io:format("received tcp message~n"),
+    	relay_sender!{rly_msg, Bin}; %Send to Node.js
+    	%mqttprocess!{ok, Bin}; %Send to broker
     {error, closed} -> exit(closed);
     {error, econnrefused} -> exit(colsed);
     {error, Reason} -> exit(Reason)
-  end.
+  end,
+  do_recv(Socket).
 
 % Loop for messages to send to Mqtt broker
 mqtt_loop(Broker) ->
@@ -86,5 +88,5 @@ list_to_binary(Topic).
 send_to_broker(Broker, Data) -> 	
     	emqttc:publish(Broker, find_topic(Data), Data).
 
-% relay_supervisor:start_link()
+% relay_supervisor:start_link().
 % sensor_package_supervisor:start_link().

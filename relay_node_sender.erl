@@ -24,20 +24,21 @@ send_message(Message) ->
 % Sends tcp message
 loop(Socket) ->
 	% Add message to existing message
+	io:fwrite("loop~n"),
 	receive
 		{rly_msg, M} -> 
+			io:fwrite("receive message~n"),
 			loop(dispatch(M, Socket))
 	end.
 
 % Sends a message. If socket doesn't work, try to reconnect until success.
 dispatch(Message, Socket) ->
-	case gen_tcp:send(Socket, 
-		[atom_to_binary(M, utf8) || M <- Message]) of
+	case gen_tcp:send(Socket, Message) of
 		{error, Reason} ->
 			io:fwrite("Relay | Failed to dispatch, reconnecting.~p~n", [Reason]),
 			dispatch(Message, connect());
 		ok ->
-			io:fwrite("Relay | Successfully dispatched.~n", []),
+			io:fwrite("Relay | Successfully dispatched. ~p~n", [Message]),
 			Socket
 	end.
 
@@ -46,7 +47,7 @@ dispatch(Message, Socket) ->
 	%io:format("hej"),
 	%io:format("test relay node ip: ", [relay_config_accesser:get_field(node_ip)]),
 	case gen_tcp:connect(relay_config_accesser:get_field(node_ip),
-		config_accesser:get_field(node_port),
+		relay_config_accesser:get_field(node_port),
 		[{mode, binary}]) of
 		{ok, Socket} ->
 			Initmessage = "initProcess::{\"name\":\"hej\",\"type\":\"package\"}",
