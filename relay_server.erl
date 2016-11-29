@@ -11,13 +11,13 @@ init([]) ->
 
 	link(relay_node_sender:start()),
 	
-	register(mqttprocess, spawn_link(fun() -> connect_to_broker() end)), %broker
+	register(mqttprocess, spawn(fun() -> connect_to_broker() end)), %broker
 
 	{ok,Listensocket} = gen_tcp:listen(
 		config_accesser:get_field(relay_listen_port),
 		[binary,{packet,0},{active,false}]),
 	
-	spawn_link(fun() -> server_loop(Listensocket) end),
+	spawn(fun() -> server_loop(Listensocket) end),
 	
 	%spawn_link(fun() ->
 	%	timer:sleep(10000),
@@ -30,7 +30,7 @@ server_loop(Listensocket) ->
 	case gen_tcp:accept(Listensocket) of
 		{ok,Socket} ->
 			%io:format("hej"),
-			spawn(fun()-> process(Socket) end),
+			spawn(fun()-> do_recv(Socket) end),
 			server_loop(Listensocket);
 		{error,Reason} ->
 			io:format("error in server loop~p", [Reason]),
@@ -38,10 +38,10 @@ server_loop(Listensocket) ->
 	end.
 
 %% handle current connection 	
-process(Socket) -> 
-	Err = do_recv(Socket),
-	io:format("~p~n",[Err]),
-	gen_tcp:close(Socket).
+%process(Socket) -> 
+%	Err = do_recv(Socket),
+%	io:format("~p~n",[Err]),
+%	gen_tcp:close(Socket).
 
 %% receive incomming data from socket (Sensor packages)
 do_recv(Socket) ->
@@ -57,8 +57,9 @@ do_recv(Socket) ->
 % Loop for messages to send to Mqtt broker
 mqtt_loop(Broker) ->
 	receive
-		{ok, Bin} -> send_to_broker(Broker, Bin);
-		_ -> mqtt_loop(Broker)
+		{ok, Bin} -> send_to_broker(Broker, Bin),
+			mqtt_loop(Broker)
+		after 5000 -> connect_to_broker()
 	end.
 	
 % Connect to the mqtt broker
@@ -70,6 +71,7 @@ connect_to_broker() ->
 		%{port, 1883},
 		%{client_id, <<"testClientEmanuel">>}]),
 		{client_id, relay_config_accesser:get_field(user)}]),
+		{debug, none},
 		mqtt_loop(Broker).
 
 % get the topic information from sensor data% 
@@ -84,5 +86,5 @@ list_to_binary(Topic).
 send_to_broker(Broker, Data) -> 	
     	emqttc:publish(Broker, find_topic(Data), Data).
 
-% relay_supervisor:start_link().
+% relay_supervisor:start_link()
 % sensor_package_supervisor:start_link().
