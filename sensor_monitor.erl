@@ -1,16 +1,44 @@
 -module(sensor_monitor).
 -author("Isar Arason").
--export([start/4]).
+-export([start/2]).
 
 % Reads a value from the given pin and sends it to Sender
-start(Reciever, SensorName, Pin, Interval) ->
-	loop(Reciever, SensorName, Pin, Interval).
+start(SensorList, Receiver) ->
+	{ok, SerialPort} = read_serial:open(config_accesser:get_field(sensor_serial_port)),
+	Interval = config_accesser:get_field(sensor_interval),
+
+	io:fwrite("Sensor process started~n"),
+	loop(SensorList, Receiver, SerialPort, Interval).
 	
-loop(Receiver, SensorName, Pin, Interval) ->
-	Receiver ! {SensorName, get_value(Pin)},
+% May be improved by adding a queue for sensor - timing pairs
+% where timed out sensors will be placed further back in the queue
+loop(SensorList, Receiver, SerialPort, Interval) ->
+	read_all(Receiver, SerialPort, SensorList),
 	timer:sleep(Interval),
-	loop(Receiver, SensorName, Pin, Interval).
+	loop(SensorList, Receiver, SerialPort, Interval).
+
+read_all(Receiver, SerialPort, [{SensorName, _, PinName} | Ls]) ->
+	Value = get_value(SerialPort, PinName),
+	case Value of
+		timeout ->
+			ok;
+		_ ->			
+			io:fwrite("Received: ~p~n", [{SensorName, integer_to_list(hd(Value))}]),
+			Receiver ! {SensorName, Value}
+	end,
+
+	read_all(Receiver, SerialPort, Ls);
 	
-get_value(Pin) -> 
-	%% Todo: read from a pin %%
-	value_generator:generate_value().
+read_all(_, _, []) -> ok.
+
+get_value(SerialPort, PinName) ->
+	% Todo - timeouts and error recovery
+	SerialPort ! {send, PinName},
+	receive
+		{data, Bytes} ->
+			binary:bin_to_list(Bytes)
+	after 
+		2000 -> 
+			io:fwrite("Sensor reading timed out on pin ~p~n", [PinName]),
+			timeout
+	end.
