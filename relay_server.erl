@@ -19,9 +19,9 @@ init([]) ->
 	
 	spawn_link(fun() -> server_loop(Listensocket) end),
 	
-	spawn_link(fun() ->
-		timer:sleep(10000),
-		io:fwrite("~p", 1/0) end),
+	%spawn_link(fun() ->
+	%	timer:sleep(10000),
+	%	io:fwrite("~p", 1/0) end),
 	
 	{ok, relay_serverState}.
 
@@ -74,11 +74,15 @@ connect_to_broker() ->
 
 % get the topic information from sensor data% 
 find_topic(Data) ->
-[{sensor_package,PKG}, {user, USR}, {group, GRP},_,_,_,_,_]=json:decode(atom_to_list(Data)),
-Topic = atom_to_list(GRP) ++ "/" ++ atom_to_list(USR) ++ "/" ++ atom_to_list(PKG),
+[{sensor_package,PKG}, {user, USR}, {group, GRP},_,_,_,_,_] = json:decode(binary_to_list(Data)),
+%Topic = binary_to_list(atom_to_list(GRP) ++ "/" ++ atom_to_list(USR) ++ "/" ++ atom_to_list(PKG)),
+Topic = GRP ++ "/" ++ USR ++ "/" ++ PKG,
+io:format("this is the topic~p~n", [Topic]),
 list_to_binary(Topic).
 
 % Send data to the Mqtt broker
 send_to_broker(Broker, Data) -> 	
     	emqttc:publish(Broker, find_topic(Data), Data).
- 
+
+% relay_supervisor:start_link().
+% sensor_package_supervisor:start_link().
