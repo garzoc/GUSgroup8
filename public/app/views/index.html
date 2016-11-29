@@ -11,7 +11,7 @@
 		<!--bootstrap/ later replace the link with locally hosted version (install with bower)-->
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.1/paper/bootstrap.min.css">
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css">
-		<link rel="stylesheet" href="assets/css/style.css">
+		<link rel="stylesheet" id="customCSS" href="assets/css/light.css">
 
 		<!-- JS -->
 		<!-- load angular and angular-route via CDN/later replace links with locally hosted versions -->
@@ -21,16 +21,16 @@
 
 		<!--controllers-->
 		<script src="app/controllers/mainCtrl.js"></script>
-		
+
 			<!--services-->
 		<script src="app/services/authService.js"></script>
 
 		<!--main angular app files-->
 		<script src="app/app.routes.js"></script>
 		<script src="app/app.js"></script>
-		
+
 		<script src="app/socket.js"></script>
-		
+
 	</head>
 
 	<body ng-app="smosApp" ng-controller="mainController as main">
@@ -44,9 +44,11 @@
 						class="logo" height ="30px"/></span> Sensor Monitoring System</a>
 					</div>
 				</div>
-				
+
 				<ul class="nav navbar-nav">
-					<li ng-if="main.loggedIn"><a href="/settings">Settings</a><li>
+					<li><a href="#" ng-click="main.setTheme('dark')">Dark</a></li>
+					<li><a href="#" ng-click="main.setTheme('light')">Light</a></li>
+					<li ng-if="main.loggedIn"><a href="/settings">Settings</a></li>
 					<li ng-if="main.loggedIn"><a href="#" ng-click="main.doLogout()">Logout</a></li>
 				</ul>
 			</div>
@@ -65,7 +67,7 @@
 				<p class="text-muted" style="display:inline"><a href="#">About</a></p>
 				<p class="text-muted" style="display:inline"><a href="#">License</a></p>
 				<p class="text-muted" style="display:inline"><a href="#">Contact us</a></p>
-			</ul>  
+			</ul>
 		</footer>
 	</body>
 </html>

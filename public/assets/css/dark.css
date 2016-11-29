@@ -15,7 +15,7 @@ html {
 }
 body {
   /* Margin bottom by footer height */
-  
+
 }
 
 
@@ -30,6 +30,11 @@ body {
 	top:0;
 	width:100%;
 }*/
+.btn.btn-block {
+	border-radius: 0px;
+  background-color: black;
+}
+
 
 .container {
 	width: auto;
@@ -45,6 +50,3 @@ body {
   height: 60px;
   background-color: #f5f5f5;
 }
-
-
-
