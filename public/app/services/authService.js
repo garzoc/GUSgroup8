@@ -1,3 +1,4 @@
+//.ajaxSetup({cache: false}});
 angular.module('authService', [])
 
 // ===================================================
@@ -19,6 +20,8 @@ angular.module('authService', [])
 			password: password
 		})
 			.then(function(data) {
+				
+				
 				var inc = data.data; //initially data.token sufficed but now data.data.token is needed
 				AuthToken.setToken(inc.token);
 				console.log(inc.token);
@@ -45,7 +48,7 @@ angular.module('authService', [])
 	// get the logged in user
 	authFactory.getUser = function() {
 		if (AuthToken.getToken())
-			return $http.get('/api/me', { cache: true });
+			return $http.get('/api/me', { cache: false });
 		else
 			return $q.reject({ message: 'User has no token.' });
 	};
