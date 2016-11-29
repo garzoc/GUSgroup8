@@ -17,7 +17,7 @@ var UserSchema = new Schema({
     select: false
   }, //select false means the password field wont be retrieved in json requests by default
   sensor_package: {
-    type  : [String]  // array of strings,populated by the internal IDS allocated by mongoose.
+    type  : String,  // array of strings,populated by the internal IDS allocated by mongoose.
     required : true
   }
 });

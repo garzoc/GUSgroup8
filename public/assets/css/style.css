@@ -1,17 +1,45 @@
 /* Sticky footer styles
 -------------------------------------------------- */
+
+  html, body {
+	margin:0;
+	padding:0;
+	height:100%;
+}
+
+
+
 html {
   /* position: relative; */
   /* min-height: 100%; */
 }
 body {
   /* Margin bottom by footer height */
-  margin-bottom: 60px;
+  
 }
 
-.footer {
+
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+/*.header{
+	position:fixed;
+	top:0;
+	width:100%;
+}*/
+
+.container {
+	width: auto;
+	max-width: 680px;
+	padding: 0 15px;
+}
+
+.footer{
   position: absolute;
-  bottom: 0;
+  bottom: 0px;
   width: 100%;
   /* Set the fixed height of the footer here */
   height: 60px;
@@ -19,12 +47,4 @@ body {
 }
 
 
-/* Custom page CSS
--------------------------------------------------- */
-/* Not required for template or sticky footer method. */
 
-.container {
-  width: auto;
-  max-width: 680px;
-  padding: 0 15px;
-}

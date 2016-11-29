@@ -107,7 +107,8 @@ module.exports = function(){
 				}
 			}
 		catch(e){
-  			console.log(e);
+  			console.log("[In module ("+context.type+")]: "+e+"\n\n");
+  			console.log(e.stack);
   			client.send('cnsl::{"msg":"process '+context.type+' does not exists"}');
   			//client.send("serverMessages::You were kicked from the server");
   			//server.leaveProcess(client);
@@ -128,7 +129,8 @@ module.exports = function(){
 			processList[context.serverId].clients.push(client);
 			console.log("new user joined");
 			client.send('cnsl::{"msg":"succefully joined process '+processList[context.serverId].name+'"}');
-			if(typeof(processList[context.serverId].module[newUserFunc]) == "function"){
+			client.inProcess=true;
+			if(processList[context.serverId].module!==undefined &&typeof(processList[context.serverId].module[newUserFunc]) == "function"){
 				processList[context.serverId].module[newUserFunc](json.cloneObject(client));
 			}else{
 				console.log("missing "+newUserFunc+" funcion");
@@ -166,7 +168,7 @@ module.exports = function(){
 			}else{
 				if(typeof(processList[client.serverId].module["onClose"]) === "function"){
 					client.localId++;
-					client.verfication=global.cloneObject(processList[client.serverId].clients[0]);
+					client.verfication=json.cloneObject(processList[client.serverId].clients[0]);
 					processList[client.serverId].module["onClose"](client);
 				}else{
 					console.log("missing onClose funcion");
@@ -237,23 +239,24 @@ module.exports = function(){
 
   //relay messages to modules
 	this.msgRelay=function(message,client){
+		client.api=interface;
 		var dir;
 		try{
-			dir=server.decode(message.toString())
+			dir=this.decode(message.toString())
 		}catch(err){
-			console.log(err);
+			console.log(" [calling decode]: "+err);
 			dir=null;
 		}
 		if(dir===null)return null;
 		//console.log(this.inProcess);
 
-		if(!(client.inProcess===true)){
+		if(client.inProcess!==true){
 			this[dir.func](dir.arg,client);
 		}else{
 			if(client.staticFunction===undefined){
 				processList[client.serverId].module[dir.func](dir.arg,json.cloneObject(client));
 			}else{
-				console.log(dir.arg+"    god natt");
+				//console.log(dir.arg+"    god natt");
 				processList[client.serverId].module[client.staticFunction](dir.arg ,json.cloneObject(client));
 			}
 		}
@@ -271,6 +274,10 @@ module.exports = function(){
 			this.api=interface;
 			this.attribute={};
 		}
+	}
+	
+	this.interface= function(){
+		return interface;
 	}
 	
 	

@@ -5,6 +5,7 @@ var Server=require("./SocketServer.js");
 module.exports={
 	init:function(socketPort,tcpPort){
 		
+		var server=new Server;
 		var socket = new WebSocketServer({ port:socketPort });
 		
 		//WebSocket Event handlers======================================================
@@ -13,6 +14,7 @@ module.exports={
 			//var x="mud";
 			//var y="dood";
 			//client.send('log::{"Name":"'+x+'","Type":"'+y+'"}');
+			client.api=server.interface();
 
 			client.on('message', function msg(message) {
 				server.msgRelay(message,this);
@@ -45,6 +47,7 @@ module.exports={
 
 
 			});*/
+			socket.api=server.interface();
 			console.log("user connected on tcp line");
 
 			//when the relay server
@@ -81,7 +84,7 @@ module.exports={
 		tcpServer.listen(tcpPort);
 		console.log("tcp listening on port "+tcpPort);
 		
-		return new Server;
+		return server;
 	}	
 }
 

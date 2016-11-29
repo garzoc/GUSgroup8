@@ -8,6 +8,14 @@ function jsonValueForm(value){
 
 module.exports={
 	
+	size:function(obj){
+		var count=0;
+		for(i in obj){
+			count ++;
+		}
+		return count;
+	},
+	
 	cloneObject:function(obj){
 		var clone=new Object;
 		for(var k in obj){
@@ -26,6 +34,7 @@ module.exports={
 	},
 
 	matchObject:function(a,b){
+		if(this.size(a)!==this.size(b)) return false;
 		for(var k in b){
 			if(!a[k]===b[k])return false;
 		}
@@ -42,7 +51,7 @@ module.exports={
 	
 	
 	matchObjectType:function(a,b){
-		if(size(a)===size(b))
+		if(this.size(a)!==this.size(b)) return false;;
 			for(var k in b){
 				if(!a[k]===b[k])return false;
 			};
@@ -50,13 +59,7 @@ module.exports={
 	
 	},
 
-	size:function(obj){
-		var count=0;
-		for(i in obj){
-			count ++;
-		}
-		return count;
-	},
+	
 	
 	objectToString:function(obj){
 		var string="";

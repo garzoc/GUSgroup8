@@ -1,7 +1,7 @@
 var mod=module.exports;
 var sender;
-var pack = require('../moodels/Package.js');
-
+var pack = require('../models/Package.js');
+var json=require('./jsonObj.js');
 
 
 var packageList=new Array;
@@ -26,16 +26,19 @@ mod.newUser=function(user){
 	//console.log(user.isVIP);
 	//console.log(user.api.getClients(user)[0].attribute.test());
 	//console.log(user.api.getClients(user)[0].isVIP);
+	console.log("thena");
+	user.api.setStaticFunction("onMessage",user);
 }
 var counter=0;
 
 function msg(data,client){
-	var userList=global.getClients(client);
-	var msg=global.objectToString(data);
-	//console.log(msg);
+	var userList=client.api.getClients(client);
+	var msg=json.objectToString(data);
+	console.log(msg);
+	client.send(msg);
 	for(var i=0;i<userList.length;i++){	
 		//console.log(msg);
-		userList[i].send('cnsl::'+msg);
+		userList[i].send(msg);
 	}
 	
 }
@@ -47,7 +50,7 @@ mod.onMessage=function(data,client){
 	//console.log(counter);
 	
 	//1478179373
-	console.log(data+"  god morgin");
+	//console.log(data+"  god morgin");
 	if(data.constructor===Array && data.length>1) {
 		console.log("data is array ??????????????????????????????????????????????????????+");
 			for(var i in data) msg(i,client);

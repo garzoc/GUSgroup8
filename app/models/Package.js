@@ -49,7 +49,7 @@ sensorID: {
 
 timestamp: {
   type: Date,
-  default: Date.now,
+  default: Date.now(),
   required: true
 
 },
@@ -57,7 +57,7 @@ timestamp: {
 //'default' is default time the jason was saved to the DB.
 //`Date.now()` returns the current unix timestamp as a number
 created: {
-  type: Date.now,
+  type: Date,
   required: true
 },
 
@@ -80,7 +80,7 @@ if (this.timestamp !== undefined){
 });
 
 
-module.exports = mongoose.model('Package', packageSchema);
+module.exports = mongoose.model('Package', PackageSchema);
 
 //Use the schema to register a model with MongoDb
 // mongoose.model('Package', packageSchema);
