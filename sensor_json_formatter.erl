@@ -16,14 +16,9 @@ sensor_to_json(Value, SensorName) ->
 			{sensor_unit, config_accesser:get_sensor_unit(SensorName)},
 			{smart_mirror_ID, config_accesser:get_field(smart_mirror_ID)}
 		],
-<<<<<<< HEAD
 json:encode(M).
-=======
-	json:encode(M).
 
 	
 get_time() ->
 	{MegaSecs, Secs, _} = now(),
 	MegaSecs * 1000000 + Secs.
-
->>>>>>> Erlang-Sensor-Dev
