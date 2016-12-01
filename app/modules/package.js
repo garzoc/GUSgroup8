@@ -13,14 +13,14 @@ mod.init=function(host){
 	 console.log(host.isVIP);
 	 //host.api.add_custom_attribute("test",function(){return processList},host);
 	// host.interface.getClients(host);
-		var package = new pack();
+		/*var package = new pack();
 		package.user = "Test User";
 		package.group = "Group8";
 		package.value = 88;
 		package.sensorID = "Sensor 0";
 		package.timestamp = Date.now();
 		package.unit = "%";
-		package.save();
+		package.save();*/
 };
 
 mod.newUser=function(user){
@@ -35,8 +35,8 @@ var counter=0;
 function msg(data,client){
 	var userList=client.api.getClients(client);
 	var msg=json.objectToString(data);
-	console.log(msg);
-	client.send(msg);
+	console.log(msg+   "wefwefwefwe");
+	//client.send(msg);
 	for(var i=0;i<userList.length;i++){
 		//console.log(msg);
 		userList[i].send(msg);
@@ -49,7 +49,7 @@ mod.onMessage=function(data,client){
 
 	//counter++;
 	//console.log(counter);
-
+	console.log(data);
 	//1478179373
 	//console.log(data+"  god morgin");
 	if(data.constructor===Array && data.length>1) {

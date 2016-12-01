@@ -34,9 +34,9 @@ module.exports={
 	},
 
 	matchObject:function(a,b){
-		if(this.size(a)!==this.size(b)) return false;
+		if(this.size(a)!==this.size(b)){ console.log("iewjfoweiioewjfoi");return false;};
 		for(var k in b){
-			if(!a[k]===b[k])return false;
+			if(a[k]!==b[k]){console.log(k);return false;}
 		}
 		return true;
 	

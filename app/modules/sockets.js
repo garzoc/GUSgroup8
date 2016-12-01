@@ -49,12 +49,14 @@ module.exports={
 			});*/
 			socket.api=server.interface();
 			console.log("user connected on tcp line");
+			socket.send=function(message){
+				socket.write(message);
+			}
 
 			//when the relay server
-			socket.on('data',function(message){ ///
-				this.send=function(message){
-					this.write(message);
-				}
+			socket.on('data',function(message){ 
+				//console.log(message.toString());
+				
 				//console.log(message.toString()+"    =============================================");
 				server.msgRelay(message,this);
 

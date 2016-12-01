@@ -13,6 +13,7 @@ module.exports = function(){
 				return processList[client.serverId].clients;
 			}else{
 				console.log("failed modified client client");
+				return processList[client.serverId].clients;
 			}
 			updateClient(client);
 		},
@@ -42,6 +43,7 @@ module.exports = function(){
 				//console.log("success");
 				processList[client.serverId].clients[client.localId].staticFunction=func;
 			}else{
+				processList[client.serverId].clients[client.localId].staticFunction=func;
 				console.log("failed modified client client");
 			}
 			updateClient(client);
@@ -82,8 +84,8 @@ module.exports = function(){
 
   //module handlers=============================================
 	this.initProcess= function(context,client){
-  	console.log(context.name);
-
+  	//console.log(context.name+"dfkjwenfjwenfjwenfkjwenfenfjwenfnwejnfwenfjkwfefnwekjn");
+	
 	
   	//console.log(server.processList.length+"  hello");
 
@@ -126,10 +128,11 @@ module.exports = function(){
 		if(context.serverId<processList.length && processList.length>0&&client.serverId===undefined){
 			client.serverId=context.serverId;
 			client.localId=processList[context.serverId].clients.length;
+			client.inProcess=true;
 			processList[context.serverId].clients.push(client);
 			console.log("new user joined");
 			client.send('cnsl::{"msg":"succefully joined process '+processList[context.serverId].name+'"}');
-			client.inProcess=true;
+			
 			if(processList[context.serverId].module!==undefined &&typeof(processList[context.serverId].module[newUserFunc]) == "function"){
 				processList[context.serverId].module[newUserFunc](json.cloneObject(client));
 			}else{
@@ -157,7 +160,7 @@ module.exports = function(){
 			//console.log(server.processList[client.serverId].clients.splice(client.localId+1,1));
 			
 			if(processList[client.serverId].clients.length===0){
-				console.log("closing server "+server.processList[client.serverId].name);
+				console.log("closing server "+processList[client.serverId].name);
 				processList.splice(client.serverId,1);
 
 				for(var i=client.serverId;i<processList.length;i++){
@@ -201,8 +204,10 @@ module.exports = function(){
 
   //message processor==============================================0
 	this.decode=function(stringData){
+		
 		var packetStruct=stringData.split("::");
 		var data={};
+		//console.log(packetStruct[0]);
 		//console.log(buffer.constructor===Array);
 		//console.log(buffer);
 		if(packetStruct.constructor===Array && packetStruct.length>1) {
@@ -239,19 +244,22 @@ module.exports = function(){
 
   //relay messages to modules
 	this.msgRelay=function(message,client){
-		client.api=interface;
+		//client.api=interface;
 		var dir;
 		try{
 			dir=this.decode(message.toString())
+			console.log(dir.arg);
 		}catch(err){
 			console.log(" [calling decode]: "+err);
+			console.log(err.stack);
+			
 			dir=null;
 		}
 		if(dir===null)return null;
 		//console.log(this.inProcess);
 
 		if(client.inProcess!==true){
-			this[dir.func](dir.arg,client);
+		try{	this[dir.func](dir.arg,client);}catch(err){};
 		}else{
 			if(client.staticFunction===undefined){
 				processList[client.serverId].module[dir.func](dir.arg,json.cloneObject(client));
