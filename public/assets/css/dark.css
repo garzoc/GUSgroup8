@@ -38,12 +38,17 @@ body {
 
 .container {
 	width: auto;
+  border: 2px solid black;
 	max-width: 680px;
 	padding: 0 15px;
+  height: 100%;
+}
+
+.ngview {
 }
 
 .footer{
-  position: absolute;
+  position: relative;
   bottom: 0px;
   width: 100%;
   /* Set the fixed height of the footer here */
