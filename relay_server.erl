@@ -14,14 +14,10 @@ init([]) ->
 	%register(mqttprocess, spawn_link(fun() -> connect_to_broker() end)), %broker
 
 	{ok,Listensocket} = gen_tcp:listen(
-		config_accesser:get_field(relay_listen_port),
+		relay_config_accesser:get_field(relay_listen_port),
 		[binary,{packet,0},{active,false}]),
 	
 	spawn_link(fun() -> server_loop(Listensocket) end),
-	
-	%spawn_link(fun() ->
-	%	timer:sleep(10000),
-	%	io:fwrite("~p", 1/0) end),
 	
 	{ok, relay_serverState}.
 
@@ -29,7 +25,6 @@ init([]) ->
 server_loop(Listensocket) ->
 	case gen_tcp:accept(Listensocket) of
 		{ok,Socket} ->
-			%io:format("hej"),
 			spawn(fun()-> do_recv(Socket) end),
 			server_loop(Listensocket);
 		{error,Reason} ->
@@ -37,19 +32,12 @@ server_loop(Listensocket) ->
 			exit({accept,Reason})
 	end.
 
-%% handle current connection 	
-%process(Socket) -> 
-%	Err = do_recv(Socket),
-%	io:format("~p~n",[Err]),
-%	gen_tcp:close(Socket).
-
 %% receive incomming data from socket (Sensor packages)
 do_recv(Socket) ->
   case gen_tcp:recv(Socket, 0) of
     {ok, Bin} -> 
     	io:format("received tcp message~n"),
-    	relay_sender!{rly_msg, Bin}; %Send to Node.js
-    	%mqttprocess!{ok, Bin}; %Send to broker
+	process_message(Bin);
     {error, closed} -> exit(closed);
     {error, econnrefused} -> exit(colsed);
     {error, Reason} -> exit(Reason)
@@ -59,34 +47,64 @@ do_recv(Socket) ->
 % Loop for messages to send to Mqtt broker
 mqtt_loop(Broker) ->
 	receive
-		{ok, Bin} -> send_to_broker(Broker, Bin),
+		{mqtt_msg, {Topic, Data}} -> send_to_broker(Broker, Topic, Data),
 			mqtt_loop(Broker)
 		after 5000 -> connect_to_broker()
 	end.
 	
 % Connect to the mqtt broker
 connect_to_broker() -> 
-	{ok, Broker} = emqttc:start_link([
-		%{host, "broker.hivemq.com"},
+	{ok, Broker} = emqttc:start_nonelink([
 		{host, relay_config_accesser:get_field(broker_host)},
 		{port, relay_config_accesser:get_field(broker_port)},
-		%{port, 1883},
-		%{client_id, <<"testClientEmanuel">>}]),
-		{client_id, relay_config_accesser:get_field(user)}]),
-		{debug, none},
+		{client_id, relay_config_accesser:get_field(user)},
+		{debug, none}]), % Changed this, might cause something to break.
 		mqtt_loop(Broker).
 
 % get the topic information from sensor data% 
 find_topic(Data) ->
-[{sensor_package,PKG}, {user, USR}, {group, GRP},_,_,_,_,_] = json:decode(binary_to_list(Data)),
-%Topic = binary_to_list(atom_to_list(GRP) ++ "/" ++ atom_to_list(USR) ++ "/" ++ atom_to_list(PKG)),
-Topic = GRP ++ "/" ++ USR ++ "/" ++ PKG,
-io:format("this is the topic~p~n", [Topic]),
-list_to_binary(Topic).
+	[{sensor_package,PKG}, {user, USR}, {group, GRP},_,_,_,_,_] = json:decode(binary_to_list(Data)),
+	Topic = GRP ++ "/" ++ USR ++ "/" ++ PKG,
+	io:format("this is the topic~p~n", [Topic]),
+	list_to_binary(Topic).
 
 % Send data to the Mqtt broker
-send_to_broker(Broker, Data) -> 	
-    	emqttc:publish(Broker, find_topic(Data), Data).
+send_to_broker(Broker, Topic, Data) -> 	
+    	emqttc:publish(Broker, Topic, Data).
+
+% Format data for public broker
+process_message(Data) ->
+	[
+		{sensor_package, Package},
+		{user, User},
+		{group, Group},
+		{value, Value},
+		{sensorID, SensorName},
+		{timestamp, Timestamp},
+		{sensor_unit, SensorUnit},
+		_,
+		{publish_to_broker, PubToBroker}
+	] = json:decode(binary_to_list(Data)),
+	
+	case PubToBroker of
+		true -> 
+			Topic = Group ++ "/" ++ User ++ "/" ++ Package,
+			% Format the data for public viewing
+			MqttData = json:encode
+			([
+				{sensor_package, Package},
+				{user, User},
+				{value, Value},
+				{sensorID, SensorName},
+				{timestamp, Timestamp},
+				{sensor_unit, SensorUnit}
+			]),
+			% Send formatted data and topic
+			mqttprocess ! {mqtt_msg, {Topic, MqttData}};
+		_ -> ok
+	end,
+
+    	relay_sender!{rly_msg, Data}. %Send to Node.js
 
 % relay_supervisor:start_link().
 % sensor_package_supervisor:start_link().
