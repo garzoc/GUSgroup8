@@ -8,9 +8,13 @@ var packageList=new Array;
 
 mod.init=function(host){
 	 sender=host;
+	 //console.log("wjenfwejkfwefnwekfwekn");
 	 host.api.setStaticFunction("onMessage",host);
 	 host.api.setVIP_user(host);
-	 console.log(host.isVIP);
+	 console.log("waxxxsaa");
+	 //console.log(host.api.getStat().localId);
+	 //console.log(host.api.getStat().staticFunction);
+	 //console.log(host.api.getStat().isVIP);
 	 //host.api.add_custom_attribute("test",function(){return processList},host);
 	// host.interface.getClients(host);
 		/*var package = new pack();
@@ -23,6 +27,11 @@ mod.init=function(host){
 		package.save();*/
 };
 
+
+	
+	
+
+
 mod.newUser=function(user){
 	//console.log(user.isVIP);
 	//console.log(user.api.getClients(user)[0].attribute.test());
@@ -33,6 +42,9 @@ mod.newUser=function(user){
 var counter=0;
 
 function msg(data,client){
+	
+	//JSON.parse(data);
+	
 	var userList=client.api.getClients(client);
 	var msg=json.objectToString(data);
 	console.log(msg+   "wefwefwefwe");
@@ -45,16 +57,41 @@ function msg(data,client){
 }
 
 
+
+function to_smartMirror(pack){
+	
+	return {
+		messageFrom:pack.user,
+		timestamp:pack.timestamp,
+		sharedContent:pack.sensor_hub,	
+		content:[new Object]	
+	}
+	
+}
+
 mod.onMessage=function(data,client){
 
 	//counter++;
 	//console.log(counter);
-	console.log(data);
+	//console.log(data);
 	//1478179373
 	//console.log(data+"  god morgin");
 	if(data.constructor===Array && data.length>1) {
 		console.log("data is array ??????????????????????????????????????????????????????+");
-			for(var i in data) msg(i,client);
+		var sPacket=new Object;
+		for(var i=0;i<data.length;i++) {
+			data[i]=JSON.parse(data[i])
+			if(data[i].smart_mirror_ID!==undefined){
+				if(sPacket[data[i].sensor_hub]===undefined)sPacket[data[i].sensor_hub]=to_smartMirror(data[i]);
+				sPacket[data[i].sensor_hub].content[0][data[i].sensorID]=data[i].value;
+			}
+		}
+		console.log(data[0]);
+
+			
+		for(var i=0;i<data.length;i++){
+			msg(data[i],client);
+		}
 	}else{
 		msg(data,client);
 	}
@@ -62,12 +99,12 @@ mod.onMessage=function(data,client){
 }
 
 mod.onClose=function(client){
-	if(client.isVIP){
-		console.log("host left, turning of process "+client.serverId);
-		var userList=global.getClients(client.verfication);
+	if(client.api.getStat().isVIP){
+		console.log("host left, turning of process "+client.api.getStat().serverId);
+		var userList=client.api.getClients(client);
 		for(var i=0;i<userList.length;i++){
 
-			global.kickUser(userList[i]);
+			client.api.kickUser(userList[i]);
 		}
 	}
 

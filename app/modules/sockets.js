@@ -10,12 +10,10 @@ module.exports={
 		
 		//WebSocket Event handlers======================================================
 		socket.on('connection', function conn(client) {
-			console.log("Client connect");
-			//var x="mud";
-			//var y="dood";
-			//client.send('log::{"Name":"'+x+'","Type":"'+y+'"}');
+			console.log("Client connect on web sockets");
 			client.api=server.interface();
-
+			
+			
 			client.on('message', function msg(message) {
 				server.msgRelay(message,this);
 			});
