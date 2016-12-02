@@ -2,7 +2,7 @@ var socket=new WebSocket("ws://127.0.0.1:8000/");
 
   socket.onopen=function(e){
     console.log("Establishing contact");
-    socket.send('initProcess::{"name" : "test","type":"package"}');
+    socket.send('{"use":"initProcess","context":{"name" : "boo","type":"package"}}');
 
   };
   
