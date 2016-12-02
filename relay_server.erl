@@ -37,7 +37,7 @@ do_recv(Socket) ->
   case gen_tcp:recv(Socket, 0) of
     {ok, Bin} -> 
     	io:format("received tcp message~n"),
-	process_message(Bin);
+		spawn(fun() -> process_message(Bin) end);
     {error, closed} -> exit(closed);
     {error, econnrefused} -> exit(colsed);
     {error, Reason} -> exit(Reason)
@@ -74,6 +74,8 @@ send_to_broker(Broker, Topic, Data) ->
 
 % Format data for public broker
 process_message(Data) ->
+
+    relay_sender!{rly_msg, Data}, %Send to Node.js
 	[
 		{sensor_package, Package},
 		{user, User},
@@ -102,9 +104,8 @@ process_message(Data) ->
 			% Send formatted data and topic
 			mqttprocess ! {mqtt_msg, {Topic, MqttData}};
 		_ -> ok
-	end,
+	end.
 
-    	relay_sender!{rly_msg, Data}. %Send to Node.js
 
 % relay_supervisor:start_link().
 % sensor_package_supervisor:start_link().
