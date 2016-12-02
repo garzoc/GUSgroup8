@@ -5,17 +5,16 @@
 % Reads a value from the given pin and sends it to Sender
 start(SensorList, Receiver) ->
 	{ok, SerialPort} = read_serial:open(config_accesser:get_field(sensor_serial_port)),
-	Interval = config_accesser:get_field(sensor_interval),
 
 	io:fwrite("Sensor process started~n"),
-	loop(SensorList, Receiver, SerialPort, Interval).
+	loop(SensorList, Receiver, SerialPort).
 	
 % May be improved by adding a queue for sensor - timing pairs
 % where timed out sensors will be placed further back in the queue
-loop(SensorList, Receiver, SerialPort, Interval) ->
+loop(SensorList, Receiver, SerialPort) ->
 	read_all(Receiver, SerialPort, SensorList),
-	timer:sleep(Interval),
-	loop(SensorList, Receiver, SerialPort, Interval).
+	timer:sleep(config_accesser:get_field(sensor_interval)),
+	loop(SensorList, Receiver, SerialPort).
 
 read_all(Receiver, SerialPort, [{SensorName, _, PinName} | Ls]) ->
 	Value = get_value(SerialPort, PinName),

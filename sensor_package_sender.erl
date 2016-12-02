@@ -32,10 +32,11 @@ loop(Message, LastTime, Socket) ->
 			NewMessage = Message ++ [M]
 	end,
 	
-	% Check time difference and dispatch if exceeded
+	% Check time difference and dispatch if excdispatch_intervaleeded
 	I = get_time() - LastTime,
+	DispatchInterval = (config_accesser:get_field(dispatch_interval) / 1000),
 	if
-		I >= 5 andalso (Message =/= []) -> 
+		I >= DispatchInterval andalso (Message =/= []) -> 
 			loop([], get_time(), dispatch(Message, Socket));
 		true ->
 			loop(NewMessage, LastTime, Socket)

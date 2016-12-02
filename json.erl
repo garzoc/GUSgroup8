@@ -43,7 +43,7 @@ json_value_format(V) ->
 	case (is_number(V) orelse is_list(V)) andalso (isAlphaNum(V)==false) of
 			true->format_to_string(V);
 			false->"\""++format_to_string(V)++"\""
-	end.	
+	end.
 	
 	
 				
