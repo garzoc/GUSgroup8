@@ -56,17 +56,26 @@ angular.module('mainCtrl', [])
 		$location.path('/login');
 	};
 	vm.doRegister = function() {
-		console.log("madafaka");
 		vm.processing = true;
+		// clear the error
+		vm.error = '';
 		vm.message = '';
-		console.log(vm.loginData);
 		// use the create function in the userService
 		Auth.create(vm.loginData)
 			.then(function(data) {
 				vm.processing = false;
 				vm.userData = {};
-				vm.message = data.data.message;
-			});
+				console.log(data.data);
+				vm.message = data.message;
+				if (data.data.success == false) {
+					vm.error = data.data.message;
+				}
+				else {
+					vm.message = data.data.message;
+					vm.success = data.data.success;
+				}
+			}
+	);
 
 
 	};
