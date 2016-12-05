@@ -20,8 +20,8 @@ angular.module('authService', [])
 			password: password
 		})
 			.then(function(data) {
-				
-				
+
+
 				var inc = data.data; //initially data.token sufficed but now data.data.token is needed
 				AuthToken.setToken(inc.token);
 				console.log(inc.token);
@@ -53,6 +53,9 @@ angular.module('authService', [])
 			return $q.reject({ message: 'User has no token.' });
 	};
 
+	authFactory.create = function(userData) {
+		return $http.post('/api/users/', userData);
+	};
 	// return auth factory object
 	return authFactory;
 
