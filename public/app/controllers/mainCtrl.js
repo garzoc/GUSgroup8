@@ -4,6 +4,10 @@ angular.module('mainCtrl', [])
 
 	var vm = this;
 
+	var dummySensorArray = ["Garage","Greenhouse","Toilet","Bedroom","Chamber"];
+	vm.packages = dummySensorArray;
+
+
 	// get info if a person is logged in
 
 
