@@ -5,6 +5,7 @@
 	margin:0;
 	padding:0;
 	height:100%;
+	width:100%;
 }
 
 
@@ -27,7 +28,8 @@ body {
 
 /*.header{
 	position:fixed;
-	top:0;
+	top:0;  border: 2px solid black;
+
 	width:100%;
 }*/
 .btn.btn-block {
@@ -37,16 +39,28 @@ body {
 
 
 .container {
-	width: auto;
+	width: 100%;
+	/*max-width: 680px;*/
+	/*padding: 0 15px;*/
+	padding-left: 0px;
+	padding-right: 0px;
+
+}
+
+.ngview{
+	margin:auto;
+	width: 100%;
 	max-width: 680px;
-	padding: 0 15px;
+
+
 }
 
 .footer{
-  position: absolute;
+  position: relative;
   bottom: 0px;
   width: 100%;
   /* Set the fixed height of the footer here */
   height: 60px;
-  background-color: #f5f5f5;
+  background-color: #000000;
+  bottom:0;
 }
