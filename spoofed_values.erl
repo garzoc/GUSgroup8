@@ -14,20 +14,41 @@ start() ->
 		_ ->
 			Pid = relay_sender
 	end,
-	spawn(fun() -> send_loop() end),
+	spawn(fun() -> send_loop(0) end),
 	Pid.
 	
-send_loop() ->
+send_loop(FutureTime) ->
 	send_message(
-		sensor_json_formatter:sensor_to_json(random:uniform(), testSensor1)
+		sensor_to_json(random:uniform(), testSensor1, FutureTime)
 	),
 	send_message(
-		sensor_json_formatter:sensor_to_json(random:uniform(), testSensor2)
+		sensor_to_json(random:uniform(), testSensor2, FutureTime)
 	),
 	send_message(
-		sensor_json_formatter:sensor_to_json(random:uniform(), testSensor3)
+		sensor_to_json(random:uniform(), testSensor3, FutureTime)
 	),
-	timer:sleep(1000).
+	timer:sleep(1000),
+	io:fwrite("Sent with time ~p~n", [get_time() + FutureTime]),
+	send_loop(FutureTime + 1008). % add 1008 seconds every second, 1 week every 10 mins
+	
+	
+sensor_to_json(Value, SensorName, FutureTime) ->
+	M = [
+			{sensor_package, config_accesser:get_field(package)},
+			{user, config_accesser:get_field(user)},
+			{group, config_accesser:get_field(group)},
+			{value, Value},
+			{sensorID, SensorName},
+			{timestamp, get_time() + FutureTime},
+			{sensor_unit, config_accesser:get_sensor_unit(SensorName)},
+			{smart_mirror_ID, config_accesser:get_field(smart_mirror_ID)},
+			{publish_to_broker, config_accesser:get_field(publish_to_broker)}
+		],
+json:encode(M).
+	
+get_time() ->
+	{MegaSecs, Secs, _} = now(),
+	MegaSecs * 1000000 + Secs.
 	
 % Queues message for sending
 send_message(Message) -> 
@@ -71,10 +92,3 @@ dispatch(Message, Socket) ->
 			timer:sleep(2000),
 			connect()
 	end.
-
-
-
-
-
-
-
