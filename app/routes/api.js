@@ -1,5 +1,6 @@
 var bodyParser = require('body-parser');
 var User = require('../models/User');
+var Package = require('../models/Package');
 var jwt = require('jsonwebtoken');
 var config = require('../../config');
 
@@ -40,7 +41,30 @@ module.exports = function(app, express) {
 	apiRouter.get('/', function(req, res) {
 		res.json({message: 'welcome to our api'});
 	});
+	apiRouter.get('/packages', function(req, res) {
+		var Packages = Package.find({owner : req.body.username});
+		console.log(Packages);
+	});
+	apiRouter.post('/packages', function(req, res) {
+		var package = new Package();
+		package.sensor_package = req.body.sensor_package;
+		package.owner = req.body.owner;
+		package.group = req.body.group;
+		//package.sensors = req.body.sensors;
+		package.save(function(err) {
+			if (err) {
+				console.log(err);
+				// duplicate entry
+				if (err.code == 11000)
+					return res.json({ success: false, message: 'A user with that username already exists. '});
+				else
+					return res.send(err);
+			}
 
+			// return a message
+			res.json({ message: 'User created!' , success: true });
+		});
+	});
 	//route to authenticate a user
 	apiRouter.post('/authenticate', function(req, res) {
 		console.log('someone tried to authenticate')
