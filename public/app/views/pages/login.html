@@ -19,12 +19,22 @@
 				{{ login.error }}
 			</div>
 
-			<button type="submit" class="btn btn-block">
-				<span ng-if="!login.processing">Login</span>
-				<span ng-if="login.processing" class="spinner"><span class="glyphicon glyphicon-repeat"></span></span>
-			</button>
+			<div class="alert alert-success" ng-if="login.success">
+				{{ login.message }}
+			</div>
 
+			<button type="submit" class="btn btn-block">
+				<span>Login</span>
+			</button>
+<br>
 		</form>
+
+		<a href='#' ng-click="login.doRegister()" >
+		<button class="btn btn-block">
+			<span>Register</span>
+		</button>
+		</a>
+
 	</div>
 
 </div>

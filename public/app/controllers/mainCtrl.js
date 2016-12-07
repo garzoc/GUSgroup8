@@ -4,6 +4,10 @@ angular.module('mainCtrl', [])
 
 	var vm = this;
 
+	var dummySensorArray = ["Garage","Greenhouse","Toilet","Bedroom","Chamber"];
+	vm.packages = dummySensorArray;
+
+
 	// get info if a person is logged in
 
 
@@ -25,7 +29,6 @@ angular.module('mainCtrl', [])
 	// function to handle login form
 	vm.doLogin = function() {
 		vm.processing = true;
-		console.log("hej");
 		// clear the error
 		vm.error = '';
 
@@ -51,6 +54,30 @@ angular.module('mainCtrl', [])
 		vm.user = '';
 
 		$location.path('/login');
+	};
+	vm.doRegister = function() {
+		vm.processing = true;
+		// clear the error
+		vm.error = '';
+		vm.message = '';
+		// use the create function in the userService
+		Auth.create(vm.loginData)
+			.then(function(data) {
+				vm.processing = false;
+				vm.userData = {};
+				console.log(data.data);
+				vm.message = data.message;
+				if (data.data.success == false) {
+					vm.error = data.data.message;
+				}
+				else {
+					vm.message = data.data.message;
+					vm.success = data.data.success;
+				}
+			}
+	);
+
+
 	};
 
 
