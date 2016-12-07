@@ -39,15 +39,19 @@ body {
 
 
 .container {
+	position:relative;
 	width: 100%;
 	/*max-width: 680px;*/
 	/*padding: 0 15px;*/
 	padding-left: 0px;
 	padding-right: 0px;
+	min-height: calc(100% - 211px);
+	height: calc(auto - 300px);
 
 }
 
 .ngview{
+	
 	margin:auto;
 	width: 100%;
 	max-width: 680px;
@@ -57,10 +61,10 @@ body {
 
 .footer{
   position: relative;
-  bottom: 0px;
+  bottom:0;
   width: 100%;
   /* Set the fixed height of the footer here */
   height: 60px;
   background-color: #000000;
-  bottom:0;
+  
 }

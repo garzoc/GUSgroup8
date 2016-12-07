@@ -4,7 +4,8 @@ angular.module('mainCtrl', [])
 
 	var vm = this;
 
-	var dummySensorArray = ["Garage","Greenhouse","Toilet","Bedroom","Chamber"];
+	//var dummySensorArray = ["Garage","Greenhouse","Toilet","Bedroom","Chamber"];
+	var dummySensorArray = [];
 	vm.packages = dummySensorArray;
 
 
