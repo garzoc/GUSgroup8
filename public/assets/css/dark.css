@@ -1,13 +1,42 @@
 /* Sticky footer styles
 -------------------------------------------------- */
-
-  html, body {
-	margin:0;
-	padding:0;
-	
+body {
+    font-family: arial, sans-serif;
+    text-align: center;
 }
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+body {
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: .1px;
+    text-rendering: optimizeLegibility;
+}
+body {
+    font-family: "Roboto","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 13px;
+    line-height: 1.846;
+    color: #666666;
+   /* background-color: #ffffff;*/
+    background-image: url("../img/images23.png");
+}
+body {
+    margin: 0;
+}
+
+body {
+    display: block;
+    margin-left: 0px;
+    margin-right: 0px;
+    width: auto;
+}
+
+
 .navbar-inverse .navbar-brand {
-    color: black;
+    color: yellow;
+
 
 }
 .navbar-brand {
@@ -19,6 +48,7 @@
     font-size: 27px;
     line-height: 23px;
     height: 64px;
+
 }
 a {
     -webkit-transition: all 0.2s;
@@ -40,8 +70,10 @@ a {
 .navbar-inverse {
     
     border-color: transparent;
+    background-color: black;
     
-    background-image: url("../img/image234.png");
+    
+    
 }
 .navbar {
     position: relative;
@@ -50,9 +82,9 @@ a {
     border: 1px solid transparent;
 }
 .navbar-inverse .navbar-nav>li>a {
-    color: black;
+    color: yellow;
     font-size: 17px;
-
+     
 }
 
 
@@ -60,13 +92,6 @@ a {
 html {
   /* position: relative; */
   /* min-height: 100%; */
-}
-body {
-  /* Margin bottom by footer height */
-  font-family: arial, sans-serif;
-  text-align: center;
-  
-
 }
 
 /* Custom page CSS
@@ -91,9 +116,9 @@ body {
   /*padding: 0 15px;*/
   padding-left: 0px;
   padding-right: 0px;
-  min-height: calc(100% - 10px);
+  min-height: calc(100% - 152px);
   height: calc(auto - 152px);
-  background-image: url("../img/world.jpg");
+  /*background-image: url("../img/world.jpg");*/
 
 }
 .container .jumbotron, .container-fluid .jumbotron {
@@ -101,11 +126,11 @@ body {
 }
 .jumbotron {
     padding: 30px 15px;
-    margin-bottom: 45px;
-    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-top: 0px;
     color: inherit;
     background-color: black;
-    opacity: .7;
+    opacity: .6;
 }
 
 .ngview {
@@ -116,19 +141,19 @@ body {
 }
 
 .footer{
-   position: absolute;
-  bottom: auto;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  background-image: url("../img/image234.png");
+    position: relative;
+    min-height: 64px;
+    margin-bottom: 0px;
+    border: 1px solid transparent;
+    background: black;
+  
   
   
  }
  .footer a{
-  color: black;
-  margin: 25px;
-  font-size: 16px;
+  color: yellow;
+  margin: 20px;
+  font-size: 14px;
 }
 
 
