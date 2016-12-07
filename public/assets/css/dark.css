@@ -4,8 +4,55 @@
   html, body {
 	margin:0;
 	padding:0;
-	height:100%;
-	width:100%;
+	
+}
+.navbar-inverse .navbar-brand {
+    color: black;
+
+}
+.navbar-brand {
+    font-size: 24px;
+}
+.navbar-brand {
+    float: left;
+    padding: 20.5px 15px;
+    font-size: 27px;
+    line-height: 23px;
+    height: 64px;
+}
+a {
+    -webkit-transition: all 0.2s;
+    -o-transition: all 0.2s;
+    transition: all 0.2s;
+}
+a {
+    color: #2196f3;
+    text-decoration: none;
+}
+a {
+    background-color: transparent;
+}
+.navbar {
+    border: none;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.navbar-inverse {
+    
+    border-color: transparent;
+    
+    background-image: url("../img/image234.png");
+}
+.navbar {
+    position: relative;
+    min-height: 64px;
+    margin-bottom: 23px;
+    border: 1px solid transparent;
+}
+.navbar-inverse .navbar-nav>li>a {
+    color: black;
+    font-size: 17px;
+
 }
 
 
@@ -16,51 +63,74 @@ html {
 }
 body {
   /* Margin bottom by footer height */
+  font-family: arial, sans-serif;
+  text-align: center;
+  
 
 }
 
-
-
-
 /* Custom page CSS
 -------------------------------------------------- */
-/* Not required for template or sticky footer method. */
+/* Not navbar navbar-inverserequired for template or sticky footer method. */
 
 /*.header{
 	position:fixed;
-	top:0;  border: 2px solid black;
-
+	top:0;
 	width:100%;
 }*/
 .btn.btn-block {
 	border-radius: 0px;
-  background-color: red;
+  background-color: black;
 }
 
 
 .container {
-	width: 100%;
-	/*max-width: 680px;*/
-	/*padding: 0 15px;*/
-	padding-left: 0px;
-	padding-right: 0px;
+  position:relative;
+  width: 100%;
+  /*max-width: 680px;*/
+  /*padding: 0 15px;*/
+  padding-left: 0px;
+  padding-right: 0px;
+  min-height: calc(100% - 10px);
+  height: calc(auto - 152px);
+  background-image: url("../img/world.jpg");
 
 }
+.container .jumbotron, .container-fluid .jumbotron {
+    border-radius: 3px;
+}
+.jumbotron {
+    padding: 30px 15px;
+    margin-bottom: 45px;
+    margin-top: 30px;
+    color: inherit;
+    background-color: black;
+    opacity: .7;
+}
 
-.ngview{
-	margin:auto;
-	width: 100%;
-	max-width: 680px;
-
+.ngview {
+  margin:auto;
+  width: 100%;
+  max-width: 680px;
 
 }
 
 .footer{
-  position: relative;
-  bottom: 0px;
+   position: absolute;
+  bottom: auto;
   width: 100%;
   /* Set the fixed height of the footer here */
   height: 60px;
-  background-color: #000000;
-  bottom:0;
+  background-image: url("../img/image234.png");
+  
+  
+ }
+ .footer a{
+  color: black;
+  margin: 25px;
+  font-size: 16px;
 }
+
+
+
+
