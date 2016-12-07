@@ -190,7 +190,8 @@ module.exports = function(){
 			if(processList[client.api.getStat().serverId].clients.length===0){
 				console.log("closing server "+processList[client.api.getStat().serverId].name);
 				processList.splice(client.api.getStat().serverId,1);
-
+				console.log("serveris is   "+client.api.getStat().serverId);
+				console.log("server length  is   "+processList.length);
 				for(var i=client.api.getStat().serverId;i<processList.length;i++){
 					for (var n=0;n<processList[i].clients.length;n++){
 						processList[i].client[n].api.getStat().serverId--;

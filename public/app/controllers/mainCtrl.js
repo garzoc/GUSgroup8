@@ -5,10 +5,12 @@ angular.module('mainCtrl', [])
 	var vm = this;
 
 	//var dummySensorArray = ["Garage","Greenhouse","Toilet","Bedroom","Chamber"];
-	var dummySensorArray = [];
-	vm.packages = dummySensorArray;
+	//var dummySensorArray = [];
+	//vm.packages = dummySensorArray;
 
-
+	$rootScope.sensorArray = ["wed","ewrwe"];
+	
+//http:localhost:8080/packgers
 	// get info if a person is logged in
 
 
@@ -19,6 +21,8 @@ angular.module('mainCtrl', [])
 	$rootScope.$on('$routeChangeStart', function() {
 		vm.loggedIn = Auth.isLoggedIn();
 		//console.log(vm.loggedIn);
+		//vm.packages = dummySensorArray;
+		//console.log("ewjfewkjfnwef "+$rootScope.d.length);
 		if(!vm.loggedIn)$location.path('/login');
 		// get user information on page load
 		Auth.getUser()
@@ -39,8 +43,34 @@ angular.module('mainCtrl', [])
 
 				// if a user successfully logs in, redirect to packages page
 				if (data.success) {
-          $location.path('/packages');
-        }
+					$location.path('/packages');
+
+					var socket=new WebSocket("ws://127.0.0.1:8000/");
+
+					socket.onopen=function(e){
+						console.log("Establishing contact");
+						socket.send('{"use":"initProcess","context":{"name" : "boo","type":"test"}}');
+						socket.send('{"use":"lol"}');
+						$rootScope.sensorArray.push("booo");
+		
+
+					};			
+					socket.onmessage=function(e){
+						console.log("lolllllooooollll");
+						/*var data=JSON.parse(e.data.toString());
+						var class="ewfdwe";//document.getElementsByClass(data.sensor_id);
+						if(class){
+							class.inneHTMl=data.value;
+						}*/
+						//dummySensorArray.push("mooo");
+						//vm.packages=dummySensorArray;
+					};
+
+					  socket.onclose=function(){
+						console.log("Connection Closed");
+						
+					};
+				}
 
 				else{
           vm.error = data.message;
