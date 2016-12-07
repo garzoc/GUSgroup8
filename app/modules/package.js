@@ -82,8 +82,19 @@ mod.onMessage=function(data,client){
 		for(var i=0;i<data.length;i++) {
 			data[i]=JSON.parse(data[i])
 			if(data[i].smart_mirror_ID!==undefined){
-				if(sPacket[data[i].sensor_hub]===undefined)sPacket[data[i].sensor_hub]=to_smartMirror(data[i]);
-				sPacket[data[i].sensor_hub].content[0][data[i].sensorID]=data[i].value;
+				if(sPacket[data[i].sensor_hub]===undefined)sPacket[data[i].sensor_hub]=to_smartMirror(data[i]);//defined a new smart mirror package
+				if(sPacket[data[i].sensor_hub].messageFrom===data[i].user){//if the groups are owned by the same user
+					sPacket[data[i].sensor_hub].content[0][data[i].sensorID]=data[i].value;
+				}else{
+					var n=0;
+					while(true){
+						if(sPacket[data[i].sensor_hub+""+n]===undefined) sPacket[data[i].sensor_hub+""+n]=to_smartMirror(data[i]);
+						if(sPacket[data[i].sensor_hub+""+n].messageFrom===data[i].user){ 
+							sPacket[data[i].sensor_hub+""+n].content[0][data[i].sensorID]=data[i].value;
+							break;
+						}
+					}
+				}
 			}
 		}
 		console.log(data[0]);
