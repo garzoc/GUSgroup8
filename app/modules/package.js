@@ -104,6 +104,7 @@ mod.onMessage=function(data,client){
 
 
 		for(var i=0;i<data.length;i++){
+			console.log(data[i]);
 			msg(data[i],client);
 			query.checkUser(data[i]);
 		}
