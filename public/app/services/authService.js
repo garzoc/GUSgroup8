@@ -53,7 +53,14 @@ angular.module('authService', [])
 			return $q.reject({ message: 'User has no token.' });
 	};
 
+	authFactory.getPackages = function(user) {
+
+		return $http.post('/api/packages', {
+			username : user });
+	}
+
 	authFactory.create = function(userData) {
+
 		return $http.post('/api/users/', userData);
 	};
 	// return auth factory object

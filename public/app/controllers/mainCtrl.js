@@ -7,9 +7,9 @@ angular.module('mainCtrl', [])
 	//var dummySensorArray = ["Garage","Greenhouse","Toilet","Bedroom","Chamber"];
 	//var dummySensorArray = [];
 	//vm.packages = dummySensorArray;
-
+	$rootScope.packageArray = [];
 	$rootScope.sensorArray = ["wed","ewrwe"];
-	
+
 //http:localhost:8080/packgers
 	// get info if a person is logged in
 
@@ -43,33 +43,37 @@ angular.module('mainCtrl', [])
 
 				// if a user successfully logs in, redirect to packages page
 				if (data.success) {
+					Auth.getPackages(vm.loginData.username).then(function(data){
+						$rootScope.packageArray = data.data.array;
+					});
 					$location.path('/packages');
 
-					var socket=new WebSocket("ws://127.0.0.1:8000/");
+
+					/*var socket=new WebSocket("ws://127.0.0.1:8000/");
 
 					socket.onopen=function(e){
 						console.log("Establishing contact");
 						socket.send('{"use":"initProcess","context":{"name" : "boo","type":"test"}}');
 						socket.send('{"use":"lol"}');
 						$rootScope.sensorArray.push("booo");
-		
 
-					};			
+
+					};
 					socket.onmessage=function(e){
 						console.log("lolllllooooollll");
 						/*var data=JSON.parse(e.data.toString());
 						var class="ewfdwe";//document.getElementsByClass(data.sensor_id);
 						if(class){
 							class.inneHTMl=data.value;
-						}*/
+						}
 						//dummySensorArray.push("mooo");
 						//vm.packages=dummySensorArray;
 					};
 
 					  socket.onclose=function(){
 						console.log("Connection Closed");
-						
-					};
+
+					};     */
 				}
 
 				else{
