@@ -8,6 +8,7 @@ var express = require('express');
 var config = require('./config');
 var bodyParser     = require('body-parser');
 var server = require('./app/modules/sockets.js').init(8000,1338);
+var query = require('./app/models/QueryBuilder.js'); //remove after testing
 var app = express();
 
 //console.log(server);
@@ -67,7 +68,16 @@ app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname + '/public/app/views/index.html'));
 });
 
+var a = {
+	sensor_package : "Bathroom",
+	user : "admin",
+	group : "random",
+	value : "145",
+	sensorID : "temperature",
+	sensor_unit : "oC",
+	smart_mirror_ID : "wedontcare",
+	timestamp : Date.now()
+};
 
+//query.checkUser(a);
 app.listen(config.port);
-
-

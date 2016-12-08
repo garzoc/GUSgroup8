@@ -2,22 +2,18 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt-nodejs');
 
-//user Schema
-var UserSchema = new Schema({
-  username: {
+UserSchema = new Schema({
+  username : {
     type : String,
     required : true,
-    index: {
-      unique : true
-    }
+    unique : true
   },
-  password: {
+  password : {
     type : String,
     required : true,
-    select: false
+    select : false
   }
 });
-
 
 
 //model functions
@@ -37,6 +33,7 @@ UserSchema.pre('save', function(next) {
     next();
   });
 });
+
 
 //method to compare a given password with the database hash
 UserSchema.methods.comparePassword = function(password) {

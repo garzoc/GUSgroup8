@@ -1,7 +1,7 @@
 var mod=module.exports;
 var sender;
-var pack = require('../models/Package.js');
 var json=require('./jsonObj.js');
+var query = require('../models/QueryBuilder.js');
 
 
 var packageList=new Array;
@@ -28,8 +28,8 @@ mod.init=function(host){
 };
 
 
-	
-	
+
+
 
 
 mod.newUser=function(user){
@@ -41,10 +41,11 @@ mod.newUser=function(user){
 }
 var counter=0;
 
+
 function msg(data,client){
-	
+
 	//JSON.parse(data);
-	
+
 	var userList=client.api.getClients(client);
 	var msg=json.objectToString(data);
 	console.log(msg+   "wefwefwefwe");
@@ -59,14 +60,14 @@ function msg(data,client){
 
 
 function to_smartMirror(pack){
-	
+
 	return {
 		messageFrom:pack.user,
 		timestamp:pack.timestamp,
-		sharedContent:pack.sensor_hub,	
-		content:[new Object]	
+		sharedContent:pack.sensor_hub,
+		content:[new Object]
 	}
-	
+
 }
 
 mod.onMessage=function(data,client){
@@ -89,7 +90,7 @@ mod.onMessage=function(data,client){
 					var n=0;
 					while(true){
 						if(sPacket[data[i].sensor_hub+""+n]===undefined) sPacket[data[i].sensor_hub+""+n]=to_smartMirror(data[i]);
-						if(sPacket[data[i].sensor_hub+""+n].messageFrom===data[i].user){ 
+						if(sPacket[data[i].sensor_hub+""+n].messageFrom===data[i].user){
 							sPacket[data[i].sensor_hub+""+n].content[0][data[i].sensorID]=data[i].value;
 							break;
 						}
@@ -99,12 +100,14 @@ mod.onMessage=function(data,client){
 		}
 		console.log(data[0]);
 
-			
+
 		for(var i=0;i<data.length;i++){
 			msg(data[i],client);
+			query.checkUser(data[i]);
 		}
 	}else{
 		msg(data,client);
+		query.checkUser(data);
 	}
 
 }
