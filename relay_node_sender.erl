@@ -4,6 +4,7 @@
 
 % Starts a process using IP and port in config file
 start() -> 
+	io:fwrite("starting~n"),
 	case whereis(relay_sender) of
 		undefined ->
 			Pid = spawn_link(fun() -> 
@@ -44,13 +45,11 @@ dispatch(Message, Socket) ->
 
 % Tries to set up a connection until success
 	connect() ->
-	%io:format("hej"),
-	%io:format("test relay node ip: ", [relay_config_accesser:get_field(node_ip)]),
 	case gen_tcp:connect(relay_config_accesser:get_field(node_ip),
 		relay_config_accesser:get_field(node_port),
 		[{mode, binary}]) of
 		{ok, Socket} ->
-			Initmessage = "initProcess::{\"name\":\"hej\",\"type\":\"package\"}",
+			Initmessage = "{\"context\":{\"name\":\"hej\",\"type\":\"package\"},\"use\":\"initProcess\"}",
 			gen_tcp:send(Socket, Initmessage),
 			io:fwrite("Relay | Successfully reconnected.~n", []),
 			Socket;
