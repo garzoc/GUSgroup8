@@ -55,6 +55,7 @@ angular.module('mainCtrl', [])
 
 					socket.onopen=function(e){
 						console.log("Establishing contact");
+						socket.send('{"use":"joinProcess","context":{"serverId" : 0}}');
 						socket.send('{"use":"initProcess","context":{"name" : "boo","type":"test"}}');
 						socket.send('{"use":"lol"}');
 						//$rootScope.sensorArray.push("booo");
@@ -62,20 +63,13 @@ angular.module('mainCtrl', [])
 
 					};
 					socket.onmessage=function(e){
-						console.log("lolllllooooollll");
-						//var data=JSON.parse(e.data.toString());
-						//var class="ewfdwe";//document.getElementsByClass(data.sensor_id);
-						//if(class){
-						//	class.inneHTMl=data.value;
-						//}
-						//dummySensorArray.push("mooo");
-						//vm.packages=dummySensorArray;
+						console.log(e.data);
 					};
 
 					  socket.onclose=function(){
 						console.log("Connection Closed");
 
-					};
+					};     
 				}
 
 				else{
