@@ -60,7 +60,7 @@ connect() ->
 	% Split list and join swapped pieces
 	% Approaches equal number of connections per valid relay
 	Relays = config_accesser:get_field(relays),
-	Index = trunc(rand:uniform() * length(Relays)),
+	Index = trunc(random:uniform() * length(Relays)),
 	{A, B} = lists:split(
 				Index,
 				Relays),
