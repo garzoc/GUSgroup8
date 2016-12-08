@@ -4,8 +4,7 @@ var Schema = mongoose.Schema;
 Sensor_hubSchema = new Schema({
   owner : {
     type : String,
-    required : true,
-    unique : true
+    required : true
   },
   hub_name : {
     type : String,
