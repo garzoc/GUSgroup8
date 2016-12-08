@@ -78,15 +78,15 @@ process_message(Data) ->
     	relay_sender!{rly_msg, Data}, %Send to Node.js
 	
 	[
-		{'Group', Group},
-		{'User', User},
-		{'Sensor_hub', Hub_name},
-		{'SensorID', SensorName},
-		{'Value', Value},
-		{'Sensor_unit', SensorUnit},
-		{'Timestamp', Timestamp},
+		{group, Group},
+		{user, User},
+		{sensor_hub, Hub_name},
+		{sensorID, SensorName},
+		{value, Value},
+		{sensor_unit, SensorUnit},
+		{timestamp, Timestamp},
 		_,
-		{'Publish_to_broker', PubToBroker}
+		{publish_to_broker, PubToBroker}
 	] = json:decode(binary_to_list(Data)),
 	
 	case PubToBroker of
