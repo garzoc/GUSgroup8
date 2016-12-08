@@ -15,7 +15,7 @@ init([]) ->
 
 	{ok,Listensocket} = gen_tcp:listen(
 		relay_config_accesser:get_field(relay_listen_port),
-		[binary,{packet,0},{active,false}]),
+		[binary,{packet,0},{active,false},{reuseaddr, true}]),
 	
 	spawn_link(fun() -> server_loop(Listensocket) end),
 	
