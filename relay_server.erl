@@ -75,7 +75,8 @@ send_to_broker(Broker, Topic, Data) ->
 % Format data for public broker
 process_message(Data) ->
 
-    relay_sender!{rly_msg, Data}, %Send to Node.js
+    	relay_sender!{rly_msg, Data}, %Send to Node.js
+	
 	[
 		{'Group', Group},
 		{'User', User},
@@ -99,8 +100,8 @@ process_message(Data) ->
 				{'Sensor_hub', Hub_name},
 				{'SensorID', SensorName},
 				{'Value', Value},
-				{'Sensor_unit', SensorUnit}
-				{'Timestamp', Timestamp},
+				{'Sensor_unit', SensorUnit},
+				{'Timestamp', Timestamp}
 			]),
 			% Send formatted data and topic
 			mqttprocess ! {mqtt_msg, {Topic, MqttData}};
