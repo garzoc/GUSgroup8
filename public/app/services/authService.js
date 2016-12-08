@@ -59,6 +59,13 @@ angular.module('authService', [])
 			username : user });
 	}
 
+	authFactory.getSensor = function(user, host) {
+		console.log(user + host);
+		return $http.post('/api/sensors', {
+			username : user,
+			package : host});
+	}
+
 	authFactory.create = function(userData) {
 
 		return $http.post('/api/users/', userData);

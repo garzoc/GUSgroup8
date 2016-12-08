@@ -12,6 +12,11 @@ angular.module('app.routes', ['ngRoute'])
 		.when('/packages', {
 			templateUrl : 'app/views/pages/packages.html'
 		})
+		// route for the sensors page
+		.when('/sensors', {
+			templateUrl : 'app/views/pages/sensors.html'
+
+		})
 
 		// login page
 		.when('/login', {

@@ -9,6 +9,8 @@ angular.module('mainCtrl', [])
 	//vm.packages = dummySensorArray;
 	$rootScope.packageArray = [];
 	$rootScope.sensorArray = ["wed","ewrwe"];
+	$rootScope.user = "";
+	$rootScope.selectedHub = "";
 
 //http:localhost:8080/packgers
 	// get info if a person is logged in
@@ -31,6 +33,7 @@ angular.module('mainCtrl', [])
 			});
 	});
 
+
 	// function to handle login form
 	vm.doLogin = function() {
 		vm.processing = true;
@@ -43,6 +46,8 @@ angular.module('mainCtrl', [])
 
 				// if a user successfully logs in, redirect to packages page
 				if (data.success) {
+					$rootScope.user = vm.loginData.username;
+					console.log($rootScope.user);
 					Auth.getPackages(vm.loginData.username).then(function(data){
 						$rootScope.packageArray = data.data.array;
 					});
@@ -115,6 +120,14 @@ angular.module('mainCtrl', [])
 
 	};
 
+
+	vm.getSensors = function(host) {
+			$rootScope.selectedHub = host;
+		Auth.getSensor($rootScope.user,host).then(function(data){
+			$rootScope.sensorArray = data.data.array;
+			$location.path('/sensors');
+		});
+	};
 
 	vm.setTheme = function(theme) {
 		var link = "assets/css/" + theme + ".css";
