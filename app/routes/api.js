@@ -2,6 +2,8 @@ var bodyParser = require('body-parser');
 var User = require('../models/User');
 var jwt = require('jsonwebtoken');
 var config = require('../../config');
+var Sensor_hub = require('../models/Sensor_hub');
+var Sensor = require('../models/Sensor');
 
 //secret for creating the tokens
 var superSecret = config.secret
@@ -31,6 +33,7 @@ module.exports = function(app, express) {
 		});
 
 	});
+
 	// api endpoint to get user information
 	apiRouter.get('/me', function(req, res) {
 		res.send(req.decoded);
@@ -40,9 +43,21 @@ module.exports = function(app, express) {
 	apiRouter.get('/', function(req, res) {
 		res.json({message: 'welcome to our api'});
 	});
-	apiRouter.get('/packages', function(req, res) {
-		var sensor_hub = Sensor_hub.find({owner : req.body.username});
-		console.log(Sensor_hubs);
+	apiRouter.post('/packages', function(req, res) {
+		Sensor_hub.find({owner : req.body.username}).exec(function(err, hub) {
+			if (err) throw err;
+			res.json({
+				array : hub
+			});
+		});
+	});
+	apiRouter.post('/sensors', function(req, res) {
+		Sensor.find({owner : req.body.username, host : req.body.package}).exec(function(err, sensor) {
+			if (err) throw err;
+			res.json({
+				array : sensor
+			});
+		});
 	});
 
 	//route to authenticate a user
