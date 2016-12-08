@@ -46,6 +46,7 @@ module.exports = function(app, express) {
 	apiRouter.post('/packages', function(req, res) {
 		Sensor_hub.find({owner : req.body.username}).exec(function(err, hub) {
 			if (err) throw err;
+			console.log(req.body.username);
 			res.json({
 				array : hub
 			});
