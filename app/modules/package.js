@@ -48,7 +48,7 @@ function msg(data,client){
 
 	var userList=client.api.getClients(client);
 	var msg=json.objectToString(data);
-	console.log(msg+   "wefwefwefwe");
+	//console.log(msg+   "wefwefwefwe");
 	//client.send(msg);
 	for(var i=0;i<userList.length;i++){
 		//console.log(msg);
@@ -98,7 +98,9 @@ mod.onMessage=function(data,client){
 				}
 			}
 		}
-		console.log(data[0]);
+		
+		console.log(JSON.stringify(sPacket));
+		
 
 
 		for(var i=0;i<data.length;i++){

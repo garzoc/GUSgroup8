@@ -23,14 +23,14 @@ checkUser:function(message){
 }
 //procedure to fetch hub for specific user and reference the sensor we want
 function fetchHub(message) {
-  Sensor_hub.findOne({"owner" : message.user, "hub_name" : message.sensor_package}).exec(function(err,sensor_hub) {
+  Sensor_hub.findOne({"owner" : message.user, "hub_name" : message.sensor_hub}).exec(function(err,sensor_hub) {
     console.log(sensor_hub);
     if (err) return handleError(err);
 
     if (!sensor_hub) {
       var sensor_hub = new Sensor_hub();
       sensor_hub.owner = message.user;
-      sensor_hub.hub_name = message.sensor_package;
+      sensor_hub.hub_name = message.sensor_hub;
 
       sensor_hub.save(function(err) {
   			if (err) {
@@ -47,7 +47,7 @@ function fetchHub(message) {
 
     } else {
       
-    Sensor.findOne({"sensor_id" : message.sensorID, "owner" : message.user, "host" : message.sensor_package}).exec(function(err,sensor) {
+    Sensor.findOne({"sensor_id" : message.sensorID, "owner" : message.user, "host" : message.sensor_hub}).exec(function(err,sensor) {
 
       if (!sensor) {
 
@@ -55,7 +55,7 @@ function fetchHub(message) {
         sensor.owner = message.user;
         sensor.sensor_id = message.sensorID;
         sensor.unit_type = message.sensor_unit;
-        sensor.host = message.sensor_package;
+        sensor.host = message.sensor_hub;
 
         sensor.save(function(err) {
     			if (err) {
@@ -85,7 +85,7 @@ function storeValue(message){
   var input = new Value();
   input.timestamp = Date.now();
   input.value = message.value;
-  input.sensor_id = message.user + message.sensor_package + message.sensorID;
+  input.sensor_id = message.user + message.sensor_hub + message.sensorID;
 
   input.save(function(err) {
     if (err) {
