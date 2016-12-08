@@ -6,7 +6,7 @@
 start() -> start(?defPort).
 
 start(Port) ->
-	case gen_tcp:listen(Port,[binary,{packet,0},{active,false}]) of
+	case gen_tcp:listen(Port,[binary,{packet,0},{active,false}, {reuseaddr, true}]) of
 		{ok,Listensocket} -> server_loop(Listensocket);
 		{error,Reason} -> exit({Port,Reason})
 	end.
