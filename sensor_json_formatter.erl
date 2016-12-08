@@ -10,7 +10,7 @@ sensor_to_json(Value, SensorName) ->
 			{sensor_package, config_accesser:get_field(package)},
 			{user, config_accesser:get_field(user)},
 			{group, config_accesser:get_field(group)},
-			{value, Value},
+			{value, hd(Value)},
 			{sensorID, SensorName},
 			{timestamp, get_time()},
 			{sensor_unit, config_accesser:get_sensor_unit(SensorName)},
