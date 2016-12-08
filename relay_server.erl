@@ -77,29 +77,30 @@ process_message(Data) ->
 
     relay_sender!{rly_msg, Data}, %Send to Node.js
 	[
-		{sensor_package, Package},
-		{user, User},
-		{group, Group},
-		{value, Value},
-		{sensorID, SensorName},
-		{timestamp, Timestamp},
-		{sensor_unit, SensorUnit},
+		{'Group', Group},
+		{'User', User},
+		{'Sensor_hub', Hub_name},
+		{'SensorID', SensorName},
+		{'Value', Value},
+		{'Sensor_unit', SensorUnit},
+		{'Timestamp', Timestamp},
 		_,
-		{publish_to_broker, PubToBroker}
+		{'Publish_to_broker', PubToBroker}
 	] = json:decode(binary_to_list(Data)),
 	
 	case PubToBroker of
 		true -> 
-			Topic = Group ++ "/" ++ User ++ "/" ++ Package,
+			Topic = Group ++ "/" ++ User ++ "/" ++ Hub_name,
 			% Format the data for public viewing
 			MqttData = json:encode
 			([
-				{sensor_package, Package},
-				{user, User},
-				{value, Value},
-				{sensorID, SensorName},
-				{timestamp, Timestamp},
-				{sensor_unit, SensorUnit}
+				{'Group', Group},
+				{'User', User},
+				{'Sensor_hub', Hub_name},
+				{'SensorID', SensorName},
+				{'Value', Value},
+				{'Sensor_unit', SensorUnit}
+				{'Timestamp', Timestamp},
 			]),
 			% Send formatted data and topic
 			mqttprocess ! {mqtt_msg, {Topic, MqttData}};

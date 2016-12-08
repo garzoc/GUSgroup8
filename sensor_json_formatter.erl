@@ -7,15 +7,15 @@
 % Returns a json message to be sent to the relay server.
 sensor_to_json(Value, SensorName) ->
 	M = [
-			{sensor_package, config_accesser:get_field(package)},
-			{user, config_accesser:get_field(user)},
-			{group, config_accesser:get_field(group)},
-			{value, hd(Value)},
-			{sensorID, SensorName},
-			{timestamp, get_time()},
-			{sensor_unit, config_accesser:get_sensor_unit(SensorName)},
-			{smart_mirror_ID, config_accesser:get_field(smart_mirror_ID)},
-			{publish_to_broker, config_accesser:get_field(publish_to_broker)}
+			{'Group', config_accesser:get_field(group)},
+			{'User', config_accesser:get_field(user)},
+			{'Sensor_hub', config_accesser:get_field(hub_name)},
+			{'SensorID', SensorName},
+			{'Value', hd(Value)},
+			{'Sensor_unit', config_accesser:get_sensor_unit(SensorName)},
+			{'Timestamp', get_time()},
+			{'Smart_mirror_ID', config_accesser:get_field(smart_mirror_ID)},
+			{'Publish_to_broker', config_accesser:get_field(publish_to_broker)}
 		],
 json:encode(M).
 
