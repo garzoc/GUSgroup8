@@ -29,7 +29,6 @@
 		<script src="app/app.routes.js"></script>
 		<script src="app/app.js"></script>
 
-		<script src="app/socket.js"></script>
 
 	</head>
 
@@ -49,6 +48,7 @@
 					<li><a href="#" ng-click="main.setTheme('dark')">Dark</a></li>
 					<li><a href="#" ng-click="main.setTheme('light')">Light</a></li>
 					<li ng-if="main.loggedIn"><a href="/settings">Settings</a></li>
+					<li ng-if="main.loggedIn"><a href="/packages">Packages</a></li>
 					<li ng-if="main.loggedIn"><a href="#" ng-click="main.doLogout()">Logout</a></li>
 				</ul>
 			</div>
