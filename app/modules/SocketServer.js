@@ -7,11 +7,11 @@ module.exports = function(){
 	var modPath="";
 	var newUserFunc="newUser";
 	processList=[];
-	
-	
-	
+
+
+
 	var Interface=function(token){
-		
+
 		var stat= new function(token){
 			var Token=token;
 			this.inProcess=false;
@@ -22,29 +22,29 @@ module.exports = function(){
 			this.staticFunction;
 			this.getToken=function(){return Token};
 		}
-		
+
 		function getClientInList(client){
 			//console.log(processList[client.api.getStat().serverId].clients+"  eiufuiwefneufuewfnenfuwefwenfuwenfweuf");
 			return processList[client.api.getStat().serverId].clients[client.api.getStat().localId];
 		}
-		
+
 		function verifiedClient(client){
 			if(stat.getToken()===client.api.getStat().getToken()&&json.matchObject(client.api.getStat(),getClientInList(client).api.getStat())){
 				return true;
 			}
 			return false;
 		}
-		
+
 		function updateClient(client){
 			json.overwriteObject(client.api.getStat().getToken(),getClientInList(client).api.getStat().getToken());
 		}
-			
-		
-		this.getStat=function(){	
+
+
+		this.getStat=function(){
 			return stat;
 		};
-	
-		
+
+
 		this.getClients=function(client){
 			if(verifiedClient(client)){
 				return processList[client.api.getStat().serverId].clients;
@@ -54,7 +54,7 @@ module.exports = function(){
 			}
 			updateClient(client);
 		};
-	
+
 
 		this.setVIP_user=function(client){
 			if(verifiedClient(client)){
@@ -85,7 +85,7 @@ module.exports = function(){
 			}
 			updateClient(client);
 		};
-		
+
 		//dagerous allowing users to create functions will compromise data may work if only allowed to store variables
 		/*add_custom_attribute:function(name,value,client){
 			//console.log("niti");
@@ -97,13 +97,13 @@ module.exports = function(){
 			}
 			updateClient(client);
 		}*/
-		
-    };
-    
-    
-    
 
-	
+    };
+
+
+
+
+
   //server.clientsInProcess=[];
 
 
@@ -112,8 +112,8 @@ module.exports = function(){
   //init context->{"name","type"}
 	this.initProcess= function(context,client){
   	//console.log(context.name+"dfkjwenfjwenfjwenfkjwenfenfjwenfnwejnfwenfjkwfefnwekjn");
-	
-	
+
+
   	//console.log(server.processList.length+"  hello");
 
 		try{
@@ -124,7 +124,7 @@ module.exports = function(){
 				var process=processList[newServerId];
 				process.clients=[client];
 				client.api.getStat().localId=0;
-				
+
 				client.api.getStat().serverId=newServerId;
 				processList[newServerId].module=require("./"+modPath+'/'+context.type+'.js');
 				console.log("process with name "+process.name+ " running module "+context.type);
@@ -144,7 +144,7 @@ module.exports = function(){
   			//server.leaveProcess(client);
 		}
 
-		
+
 
 	}
 
@@ -160,7 +160,7 @@ module.exports = function(){
 			processList[context.serverId].clients.push(client);
 			console.log("new user joined");
 			client.send('cnsl::{"msg":"succefully joined process '+processList[context.serverId].name+'"}');
-			
+
 			if(processList[context.serverId].module!==undefined &&typeof(processList[context.serverId].module[newUserFunc]) == "function"){
 				processList[context.serverId].module[newUserFunc](json.cloneObject(client));
 			}else{
@@ -176,7 +176,7 @@ module.exports = function(){
 			}
 		}
 	}
-	
+
 	this.leaveProcess=function(client){
 		console.log(client.api.getStat().serverId+ " ==================================================");
 		if(client.api.getStat().serverId!=undefined){
@@ -186,7 +186,7 @@ module.exports = function(){
 			}
 			processList[client.api.getStat().serverId].clients.splice(client.api.getStat().localId,1);//removed localid+1 and just used local Id
 			//console.log(server.processList[client.serverId].clients.splice(client.localId+1,1));
-			
+
 			if(processList[client.api.getStat().serverId].clients.length===0){
 				console.log("closing server "+processList[client.api.getStat().serverId].name);
 				processList.splice(client.api.getStat().serverId,1);
@@ -215,7 +215,7 @@ module.exports = function(){
 			client.api.getStat().localId=undefined;
 			client.api.getStat().serverId=undefined;
 			client.api.getStat().verfication=undefined;
-			
+
 		}
 	}
 
@@ -269,9 +269,9 @@ module.exports = function(){
 				if(packetData.substr(packetData.length-1,packetData.length)!=="}"){
 					data.splice(data.length-1,1);
 				}
-				
+
 			}else{
-				
+
 				data=JSON.parse(packetData);
 				console.log("mfwiemfoiewoeiw    "+packetData.use);
 			}
@@ -292,7 +292,7 @@ module.exports = function(){
 		}catch(err){
 			console.log(" [calling decode]: "+err);
 			console.log(err.stack);
-			
+
 			dir=null;
 		}
 		if(dir===null)return null;
@@ -301,7 +301,7 @@ module.exports = function(){
 		if(client.api.getStat().inProcess!==true){
 			//console.log("tjenare    "+dir.use);
 			if(dir.constructor===Array){
-				
+
 				try{dir=this.decode(dir[0]);this[dir.use](dir.context,client);}catch(err){console.log(err)};
 			}else{
 				try{this[dir.use](dir.context,client);}catch(err){console.log(err)};
@@ -315,7 +315,7 @@ module.exports = function(){
 			}
 		}
 	}
-	
+
 	//test client=================================
 	this.dummy= function(){
 		return new function(){
@@ -324,15 +324,15 @@ module.exports = function(){
 			this.inspect=function(){
 				return test;
 			}
-			
-			this.api=interface;
+
+			//this.api=interface;
 			this.attribute={};
 		}
 	}
-	
+
 	this.interface= function(){
 		return new Interface(0);
 	}
-	
-	
+
+
 }

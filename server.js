@@ -21,14 +21,14 @@ var modInit=new Object;
 modInit.name="test";
 modInit.type="package";
 
-/*var client=server.dummy();
+var client=server.dummy();
 var client1=server.dummy();
 client.send("hej");
 client1.send("hej1");
 console.log(client);
 console.log(client1);
 server.initProcess(modInit,client);
-server.joinProcess(modJoin,client1);*/
+server.joinProcess(modJoin,client1);
 
 //bodyparser setup
 app.use(bodyParser.json());
