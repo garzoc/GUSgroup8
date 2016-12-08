@@ -317,6 +317,12 @@ module.exports = function(){
 	}
 	
 	//test client=================================
+	
+	
+	this.interface= function(){
+		return new Interface(0);
+	}
+	
 	this.dummy= function(){
 		return new function(){
 			var test="";
@@ -325,13 +331,9 @@ module.exports = function(){
 				return test;
 			}
 			
-			this.api=interface;
+			this.api=new Interface(0);
 			this.attribute={};
 		}
-	}
-	
-	this.interface= function(){
-		return new Interface(0);
 	}
 	
 	

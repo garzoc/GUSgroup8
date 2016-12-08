@@ -54,31 +54,22 @@ angular.module('mainCtrl', [])
 					$location.path('/packages');
 
 
-					/*var socket=new WebSocket("ws://127.0.0.1:8000/");
+					var socket=new WebSocket("ws://127.0.0.1:8000/");
 
 					socket.onopen=function(e){
 						console.log("Establishing contact");
-						socket.send('{"use":"initProcess","context":{"name" : "boo","type":"test"}}');
-						socket.send('{"use":"lol"}');
-						$rootScope.sensorArray.push("booo");
+						socket.send('{"use":"joinProcess","context":{"serverId" : 0}}');
 
 
 					};
 					socket.onmessage=function(e){
-						console.log("lolllllooooollll");
-						/*var data=JSON.parse(e.data.toString());
-						var class="ewfdwe";//document.getElementsByClass(data.sensor_id);
-						if(class){
-							class.inneHTMl=data.value;
-						}
-						//dummySensorArray.push("mooo");
-						//vm.packages=dummySensorArray;
+						console.log(e.data);
 					};
 
 					  socket.onclose=function(){
 						console.log("Connection Closed");
 
-					};     */
+					};     
 				}
 
 				else{

@@ -5,6 +5,7 @@ var query = require('../models/QueryBuilder.js');
 
 
 var packageList=new Array;
+//socket.send('{"use":"joinProcess","context":{"serverId" : 0}}');
 
 mod.init=function(host){
 	 sender=host;
@@ -43,7 +44,6 @@ var counter=0;
 
 
 function msg(data,client){
-
 	//JSON.parse(data);
 
 	var userList=client.api.getClients(client);
