@@ -184,7 +184,7 @@ module.exports = function(){
 			for (var i=client.api.getStat().localId;i<processList[client.api.getStat().serverId].clients.length;i++){
 				processList[client.api.getStat().serverId].clients[i].api.getStat().localId--;
 			}
-			processList[client.api.getStat().serverId].clients.splice(client.api.getStat().localId+1,1);
+			processList[client.api.getStat().serverId].clients.splice(client.api.getStat().localId,1);//removed localid+1 and just used local Id
 			//console.log(server.processList[client.serverId].clients.splice(client.localId+1,1));
 			
 			if(processList[client.api.getStat().serverId].clients.length===0){
@@ -192,10 +192,14 @@ module.exports = function(){
 				processList.splice(client.api.getStat().serverId,1);
 				console.log("serveris is   "+client.api.getStat().serverId);
 				console.log("server length  is   "+processList.length);
-				for(var i=client.api.getStat().serverId;i<processList.length;i++){
-					for (var n=0;n<processList[i].clients.length;n++){
-						processList[i].client[n].api.getStat().serverId--;
+				try{
+					for(var i=client.api.getStat().serverId;i<processList.length;i++){
+						for (var n=0;n<processList[i].clients.length;n++){
+							processList[i].client[n].api.getStat().serverId--;
+						}
 					}
+				}catch(error){
+					console.log(error);
 				}
 			}else{
 				if(typeof(processList[client.api.getStat().serverId].module["onClose"]) === "function"){
@@ -211,6 +215,7 @@ module.exports = function(){
 			client.api.getStat().localId=undefined;
 			client.api.getStat().serverId=undefined;
 			client.api.getStat().verfication=undefined;
+			
 		}
 	}
 
@@ -247,6 +252,7 @@ module.exports = function(){
 			//var packetData=packetStruct[0];//string made up of several json obejcts
 			var packetData=packetStruct;
 			buffer=packetData.split("}{");
+			//console.log(buffer);
 			if(buffer.constructor===Array && buffer.length>1){
 				//console.log(packetData+"    god natt=====================================0");
 				data=[];
@@ -278,6 +284,7 @@ module.exports = function(){
   //relay messages to modules
 	this.msgRelay=function(message,client){
 		//client.api=interface;
+		//console.log(message.toString());
 		var dir;
 		try{
 			dir=this.decode(message.toString().trim());
@@ -294,6 +301,7 @@ module.exports = function(){
 		if(client.api.getStat().inProcess!==true){
 			//console.log("tjenare    "+dir.use);
 			if(dir.constructor===Array){
+				
 				try{dir=this.decode(dir[0]);this[dir.use](dir.context,client);}catch(err){console.log(err)};
 			}else{
 				try{this[dir.use](dir.context,client);}catch(err){console.log(err)};
@@ -303,7 +311,7 @@ module.exports = function(){
 				processList[clien.api.getStat().serverId].module[dir.use](dir.context,json.cloneObject(client));
 			}else{
 				//console.log(dir.arg+"    god natt");
-				processList[client.api.getStat().serverId].module[client.api.getStat().staticFunction](dir,json.cloneObject(client));
+				try{processList[client.api.getStat().serverId].module[client.api.getStat().staticFunction](dir,json.cloneObject(client));}catch(e){}
 			}
 		}
 	}
