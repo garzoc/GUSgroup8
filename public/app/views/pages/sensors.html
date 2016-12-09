@@ -3,12 +3,11 @@
   <ul class="places">
 
     <!-- cards are created dynamically-based on how many elements there are in the package array-->
-    <div ng-repeat="k in sensorArray" class="panel panel-default">
-      <div class={{k}}>
+    <div ng-repeat="k in sensorArray" class="panel panel-default" >
+      <div>
         {{k.sensor_id}}
       </div>
-      <div class="value">  
-      <div> {{k.unit_type}} </div>
+      <p id={{k.sensor_id}}> </p>{{k.unit_type}}
     <div class="panel-footer"><a href="#">Details</a></div>
     </div>
 

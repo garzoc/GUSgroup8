@@ -11,7 +11,7 @@ checkUser:function(message){
   User.findOne({"username" : message.user}).exec(function(err, user) {
     if (!user) {
       //discard message
-      console.log("skase");
+      console.log("discarded msg" + Date.now());
     }
     else {
       //goto next step - find which package we are referencing
@@ -46,7 +46,7 @@ function fetchHub(message) {
   		});
 
     } else {
-      
+
     Sensor.findOne({"sensor_id" : message.sensorID, "owner" : message.user, "host" : message.sensor_hub}).exec(function(err,sensor) {
 
       if (!sensor) {

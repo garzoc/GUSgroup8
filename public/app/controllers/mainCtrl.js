@@ -5,12 +5,9 @@ angular.module('mainCtrl', [])
 	var vm = this;
 
 	$rootScope.packageArray = [];
-	$rootScope.sensorArray = ["wed","ewrwe"];
+	$rootScope.sensorArray = [];
 	$rootScope.user = "";
 	$rootScope.selectedHub = "";
-
-//http:localhost:8080/packgers
-	// get info if a person is logged in
 
 
 
@@ -58,18 +55,20 @@ angular.module('mainCtrl', [])
 						socket.send('{"use":"joinProcess","context":{"serverId" : 0}}');
 						socket.send('{"use":"initProcess","context":{"name" : "boo","type":"test"}}');
 						socket.send('{"use":"lol"}');
-						//$rootScope.sensorArray.push("booo");
 
 
 					};
 					socket.onmessage=function(e){
-						console.log(e.data);
+						console.log(e);
+						updateValue(e);
+						//var incoming = JSON.parse(e.data);
+
 					};
 
 					  socket.onclose=function(){
 						console.log("Connection Closed");
 
-					};     
+					};
 				}
 
 				else{
@@ -111,7 +110,7 @@ angular.module('mainCtrl', [])
 
 	};
 
-
+	
 	vm.getSensors = function(host) {
 			$rootScope.selectedHub = host;
 		Auth.getSensor($rootScope.user,host).then(function(data){
@@ -120,6 +119,13 @@ angular.module('mainCtrl', [])
 		});
 	};
 
+	//real time DOM manipulation, according to the incoming messages
+	vm.updateValue = function(incoming){
+		document.getElementById(incoming.sensorID).innerHTML = incoming.value;
+	};
+
+
+	//change theme depending on which button is pressed
 	vm.setTheme = function(theme) {
 		var link = "assets/css/" + theme + ".css";
     document.getElementById("customCSS").href=link;

@@ -60,16 +60,7 @@ app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname + '/public/app/views/index.html'));
 });
 
-var a = {
-	sensor_package : "Bathroom",
-	user : "admin",
-	group : "random",
-	value : "145",
-	sensorID : "temperature",
-	sensor_unit : "oC",
-	smart_mirror_ID : "wedontcare",
-	timestamp : Date.now()
-};
+
 
 //query.checkUser(a);
 app.listen(config.port);
@@ -83,11 +74,3 @@ console.log(client);
 console.log(client1);
 server.initProcess(modInit,client);
 //server.joinProcess(modJoin,client1);
-
-server.msgRelay('{"hej":"est"}',client);
-
-
-
-
-
-
