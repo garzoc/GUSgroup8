@@ -12,13 +12,51 @@ angular.module('mainCtrl', [])
 
 
 	//vm.loggedIn = Auth.isLoggedIn();
-
+	var user={username:""};//temp soluetion
+	var socket;
 	// check to see if a user is logged in on every request
 	$rootScope.$on('$routeChangeStart', function() {
 		vm.loggedIn = Auth.isLoggedIn();
-		//console.log(vm.loggedIn);
-		//vm.packages = dummySensorArray;
-		//console.log("ewjfewkjfnwef "+$rootScope.d.length);
+		
+		if($location.url()==="/sensors"){
+			//console.log("yoyo  "+socket);
+			if(socket===undefined){
+			socket=new WebSocket("ws://127.0.0.1:8000/");
+			socket.onopen=function(e){
+				console.log("Establishing contact");
+				socket.send('{"use":"joinProcess","context":{"serverId" : 0}}');
+				//socket.send('{"use":"initProcess","context":{"name" : "boo","type":"test"}}');
+				//socket.send('{"use":"lol"}');
+			};
+		
+			socket.onmessage=function(e){
+				console.log(e);
+				updateValue(e);
+				//var incoming = JSON.parse(e.data);
+			};
+
+			socket.onclose=function(){
+				console.log("Connection Closed");
+			};
+			}
+		}else{
+			if(socket!==undefined)socket.close();
+		}
+		
+		if($location.url()==="/sensors"||$location.url()==="/packages"){
+		
+			/*var test=vm.loginData;
+			console.log(test.username);
+			* Angular is broken
+			* */
+			Auth.getPackages(user.username).then(function(data){
+				$rootScope.packageArray = data.data.array;
+			});
+	
+		
+				
+		}
+		
 		if(!vm.loggedIn)$location.path('/login');
 		// get user information on page load
 		Auth.getUser()
@@ -42,33 +80,14 @@ angular.module('mainCtrl', [])
 				if (data.success) {
 					$rootScope.user = vm.loginData.username;
 					console.log($rootScope.user);
-					Auth.getPackages(vm.loginData.username).then(function(data){
+					/*Auth.getPackages(vm.loginData.username).then(function(data){
 						$rootScope.packageArray = data.data.array;
-					});
+					});*/
+					user.username=vm.loginData.username;//temp solution
 					$location.path('/packages');
 
 
-					var socket=new WebSocket("ws://127.0.0.1:8000/");
-
-					socket.onopen=function(e){
-						console.log("Establishing contact");
-						socket.send('{"use":"joinProcess","context":{"serverId" : 0}}');
-						socket.send('{"use":"initProcess","context":{"name" : "boo","type":"test"}}');
-						socket.send('{"use":"lol"}');
-
-
-					};
-					socket.onmessage=function(e){
-						console.log(e);
-						updateValue(e);
-						//var incoming = JSON.parse(e.data);
-
-					};
-
-					  socket.onclose=function(){
-						console.log("Connection Closed");
-
-					};
+				
 				}
 
 				else{
