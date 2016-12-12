@@ -49,7 +49,8 @@ dispatch(Message, Socket) ->
 		relay_config_accesser:get_field(node_port),
 		[{mode, binary}]) of
 		{ok, Socket} ->
-			Initmessage = "{\"context\":{\"name\":\"hej\",\"type\":\"package\"},\"use\":\"initProcess\"}",
+			%Initmessage = "{\"context\":{\"name\":\"hej\",\"type\":\"package\"},\"use\":\"initProcess\"}",
+			Initmessage = "{\"use\":\"joinProcess\",\"context\":{\"serverId\":0}}",
 			gen_tcp:send(Socket, Initmessage),
 			io:fwrite("Relay | Successfully reconnected.~n", []),
 			Socket;
