@@ -51,7 +51,7 @@ app.use(function(req, res, next) {
 });
 
 //connect to our database
-mongoose.connect(database);
+mongoose.connect(config.database);
 
 //set static files location
 //that are used for frontend (like images,views,libs)
@@ -73,7 +73,7 @@ app.get('*', function(req, res) {
 // Start listening for HTTP traffic
 app.listen(config.httpPort);
 
-
+// from here on, what does all this do and why do we still need it
 var modJoin=new Object;
 modJoin.serverId=0;
 
