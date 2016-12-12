@@ -1,5 +1,20 @@
+//
+//	Author 			: Ioannis Gkikas, Sami Sindi
+//	Description : Mongoose model of Sensor. The Schema defines our data model structure, to be used
+//                according to MongoDB guidelines
+//
+
+//
+//  IMPORT & SETUP--------------------------------------------------------------------------------------------
+//
+
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+
+
+//
+//  SCHEMA ---------------------------------------------------------------------------------------------------
+//
 
 SensorSchema = new Schema({
   sensor_id : {
@@ -20,4 +35,5 @@ SensorSchema = new Schema({
   }
 });
 
+//exporting our model
 module.exports = mongoose.model('Sensor', SensorSchema);

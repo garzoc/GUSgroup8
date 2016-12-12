@@ -1,5 +1,20 @@
+//
+//	Author 			: Ioannis Gkikas, Sami Sindi
+//	Description : Mongoose model of Value. The Schema defines our data model structure, to be used
+//                according to MongoDB guidelines
+//
+
+//
+//  IMPORT & SETUP--------------------------------------------------------------------------------------------
+//
+
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+
+
+//
+//  SCHEMA ---------------------------------------------------------------------------------------------------
+//
 
 ValueSchema = new Schema({
   timestamp : {
@@ -17,4 +32,5 @@ ValueSchema = new Schema({
   }
 });
 
+//exporting our model
 module.exports = mongoose.model('Value', ValueSchema);

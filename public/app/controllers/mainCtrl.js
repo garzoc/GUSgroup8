@@ -110,7 +110,7 @@ angular.module('mainCtrl', [])
 
 	};
 
-	
+
 	vm.getSensors = function(host) {
 			$rootScope.selectedHub = host;
 		Auth.getSensor($rootScope.user,host).then(function(data){

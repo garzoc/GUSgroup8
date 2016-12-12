@@ -1,6 +1,22 @@
+//
+//	Author 			: Ioannis Gkikas
+//	Description : Mongoose model of User. The Schema defines our data model structure, to be used
+//                according to MongoDB guidelines.Also included are exclusive functions that are used
+//                for password validation, encryption and storing.
+//
+
+//
+//  IMPORT & SETUP--------------------------------------------------------------------------------------------
+//
+
+var bcrypt = require('bcrypt-nodejs');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var bcrypt = require('bcrypt-nodejs');
+
+
+//
+//  SCHEMA ---------------------------------------------------------------------------------------------------
+//
 
 UserSchema = new Schema({
   username : {
@@ -16,8 +32,11 @@ UserSchema = new Schema({
 });
 
 
-//model functions
-//hash the password
+//
+//  MODEL FUNCTIONS -------------------------------------------------------------------------------------------
+//
+
+// mongoose middleware that executes right before saving a new user
 UserSchema.pre('save', function(next) {
   var user = this;
 
@@ -35,11 +54,13 @@ UserSchema.pre('save', function(next) {
 });
 
 
-//method to compare a given password with the database hash
+//our custom method to compare a given password with the database hash
 UserSchema.methods.comparePassword = function(password) {
   var user = this;
   return bcrypt.compareSync(password, user.password);
 
 };
 
+
+// exporting our model
 module.exports = mongoose.model('User', UserSchema);

@@ -1,3 +1,8 @@
+//deprecated file, used to define a model for storing incoming messages as-is
+// maybe storing them for a limited amount of time and letting the server handle them on its own leisure
+// would be more efficient and less bocking though the latency would be greater.
+
+
 //https://github.com/garzoc/GUSgroup8/blob/Erlang-Dev/sensor_json_formatter.erl
 var mongoose    = require('mongoose');
 //var uri         = 'mongodb://localhost:27017/test'

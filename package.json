@@ -1,5 +1,6 @@
 {
   "name": "sensor-monitoring-system",
+  "authors": "Ioannis Gkikas, John Sundling, Tigistu Desta, Sami Sindi",
   "main": "server.js",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
