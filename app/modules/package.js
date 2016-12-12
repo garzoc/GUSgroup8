@@ -1,5 +1,4 @@
 var mod=module.exports;
-var sender;
 var json=require('./jsonObj.js');
 var query = require('../models/QueryBuilder.js');
 
@@ -8,24 +7,15 @@ var packageList=new Array;
 //socket.send('{"use":"joinProcess","context":{"serverId" : 0}}');
 
 mod.init=function(host){
-	 sender=host;
+	 var client=host;
 	 //console.log("wjenfwejkfwefnwekfwekn");
-	 host.api.setStaticFunction("onMessage",host);
-	 host.api.setVIP_user(host);
-	 console.log("waxxxsaa");
+	host.api.setStaticFunction("onMessage",host);
+	host.api.setVIP_user(host);
 	 //console.log(host.api.getStat().localId);
 	 //console.log(host.api.getStat().staticFunction);
 	 //console.log(host.api.getStat().isVIP);
-	 //host.api.add_custom_attribute("test",function(){return processList},host);
-	// host.interface.getClients(host);
-		/*var package = new pack();
-		package.user = "Test User";
-		package.group = "Group8";
-		package.value = 88;
-		package.sensorID = "Sensor 0";
-		package.timestamp = Date.now();
-		package.unit = "%";
-		package.save();*/
+			//client.api.kickUser(client);
+
 };
 
 
@@ -39,6 +29,7 @@ mod.newUser=function(user){
 	//console.log(user.api.getClients(user)[0].isVIP);
 	console.log("thena");
 	user.api.setStaticFunction("onMessage",user);
+
 }
 var counter=0;
 
@@ -54,6 +45,7 @@ function msg(data,client){
 		//console.log(msg);
 		userList[i].send(msg);
 	}
+	
 
 }
 
@@ -71,16 +63,16 @@ function to_smartMirror(pack){
 }
 
 mod.onMessage=function(data,client){
-
+	console.log(data);
 	//counter++;
 	//console.log(counter);
 	//console.log(data);
 	//1478179373
 	//console.log(data+"  god morgin");
 	if(data.constructor===Array && data.length>1) {
-		console.log("data is array ??????????????????????????????????????????????????????+");
+		//console.log("data is array ??????????????????????????????????????????????????????+");
 		var sPacket=new Object;
-		for(var i=0;i<data.length;i++) {
+		for(var i=0;i<data.length;i++) {//rewtire package to smart mirror
 			data[i]=JSON.parse(data[i])
 			if(data[i].smart_mirror_ID!==undefined){
 				if(sPacket[data[i].sensor_hub]===undefined)sPacket[data[i].sensor_hub]=to_smartMirror(data[i]);//defined a new smart mirror package

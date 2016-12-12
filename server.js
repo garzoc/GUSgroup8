@@ -74,11 +74,19 @@ app.get('*', function(req, res) {
 app.listen(config.httpPort);
 
 
-//var client=server.dummy();
-//var client1=server.dummy();
-//client.send("hej");
-//client1.send("hej1");
-//console.log(client);
-//console.log(client1);
-//server.initProcess(modInit,client);
+var modJoin=new Object;
+modJoin.serverId=0;
+
+var modInit=new Object;
+modInit.name="test";
+modInit.type="package";
+
+var client=server.dummy();
+var client1=server.dummy();
+client.send("hej");
+client1.send("hej1");
+console.log(client);
+console.log(client1);
+server.initProcess(modInit,client);
+//server.msgRelay('{"hej":"pa dig"}',client);
 //server.joinProcess(modJoin,client1);

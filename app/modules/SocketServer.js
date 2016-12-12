@@ -8,105 +8,8 @@ module.exports = function(){
 	var newUserFunc="newUser";//name of the function that will be called every time a user joins a modules
 	processList=[];//list of modules
 
-	
-
-	var Interface=function(token){//interface class
-		
-		var getToken=function(){};
-		
-		var stat= new function(token){//defined interfacing varibales
-			var Token=token;//a unique identifier
-			this.inProcess=false;//user is inside module
-			this.isHost=false;//user is host
-			this.isVIP=false;//a varibale that can be alters via the interface
-			this.serverId;//serverID the id of the running modules the user is subscribed to
-			this.localId;//gives a user a localId when they join or initiate a module
-			this.staticFunction;//if defined all messages from this user will will be passed to a specific function regardless of what the package contains
-			getToken=function(){return Token};//return private token variable
-		}
-
-		function getClientInList(client){//get all client in that is subscried to a module
-			//console.log(processList[client.api.getStat().serverId].clients+"  eiufuiwefneufuewfnenfuwefwenfuwenfweuf");
-			return processList[client.api.getStat().serverId].clients[client.api.getStat().localId];
-		}
-
-		function verifiedClient(client){//test if client hasn't been altered 
-			if(stat.getToken()===client.api.getStat().getToken()&&json.matchObject(client.api.getStat(),getClientInList(client).api.getStat())){
-				return true;
-			}
-			return false;
-		}
-
-		function updateClient(client){//update the origin client in the module list
-			json.overwriteObject(client.api.getStat(),getClientInList(client).api.getStat());
-		}
 
 
-		this.getStat=function(){
-			return stat;
-		};
-
-
-		this.getClients=function(client){// get all clients of a module
-			if(verifiedClient(client)){
-				var oldArray=processList[client.api.getStat().serverId].clients;
-				var newArray=new Array;
-				for(var i=0;i<oldArray.length;i++){
-					newArray[i]=json.cloneObject(oldArray[i]);
-				}
-				return newArray;
-			}else{
-				console.log("failed modified client client");
-				//return processList[client.api.getStat().serverId].clients;
-			}
-			updateClient(client);
-		};
-
-
-		this.setVIP_user=function(client){//alter the vip variable in stat class
-			if(verifiedClient(client)){
-				var originalClient=processList[client.api.getStat().serverId].clients[client.api.getStat().localId];
-				originalClient.api.getStat().isVIP=!originalClient.api.getStat().isVIP;
-			}else{
-				console.log("failed modified client client");
-			}
-			updateClient(client);
-		};
-
-		this.kickUser=function(client){//remove client from module controller
-			if(verifiedClient(client)){
-				server.leaveProcess(client);
-			}else{
-				console.log("failed modified client client");
-			}
-			updateClient(client);
-		};
-
-		this.setStaticFunction=function(func,client){//assign the static function
-			//console.log("niti");
-			if(verifiedClient(client)){
-				//console.log("success");
-				processList[client.api.getStat().serverId].clients[client.api.getStat().localId].api.getStat().staticFunction=func;
-			}else{
-				//processList[client.api.getStat().serverId].clients[client.api.getStat().localId].api.getStat().staticFunction=func;
-				console.log("failed modified client client");
-			}
-			updateClient(client);
-		};
-
-		//dagerous allowing users to create functions will compromise data may work if only allowed to store variables
-		/*add_custom_attribute:function(name,value,client){
-			//console.log("niti");
-			if(verifiedClient(client)){
-				//console.log("success");
-				processList[client.serverId].clients[client.localId].attribute[name]=value;
-			}else{
-				console.log("failed modified client client");
-			}
-			updateClient(client);
-		}*/
-
-    };
 
 
 
@@ -184,12 +87,13 @@ module.exports = function(){
 	}
 
 	this.leaveProcess=function(client){
+		console.log("client left");
 		console.log(client.api.getStat().serverId+ " ==================================================");
 		var stats=client.api.getStat();
 		
 		//remove the user from the list of clients
-		processList[stats.serverId].clients.splice(stats.localId,1);//removed localid+1 and just used local Id
 		if(stats.serverId!==undefined && stats.serverId<processList.length){
+			processList[stats.serverId].clients.splice(stats.localId,1);//removed localid+1 and just used local Id
 			for (var i=stats.localId;i<processList[stats.serverId].clients.length;i++){
 				processList[stats.serverId].clients[i].api.getStat().localId--;//correct the localId of the clients client list
 			}
@@ -249,13 +153,10 @@ module.exports = function(){
 
   //message processor==============================================0
 	this.decode=function(stringData){
-		//console.log(stringData);
+		console.log(stringData);
 		//var packetStruct=stringData.split("::");
 	
-		if(packetStruct.constructor===Array && packetStruct.length>1) {
-			//this will never be called
-	
-		}else{
+		
 			var packetData=stringData;
 			buffer=packetData.split("}{");//split the sting in to list(string is made up of several json objects)
 			var data={};
@@ -281,7 +182,7 @@ module.exports = function(){
 				data=JSON.parse(packetData);//if string is just made up of one json object parse it and return
 				//console.log("mfwiemfoiewoeiw    "+packetData.use);
 			}
-		}
+		
 
 		return data;
 	}
@@ -319,9 +220,110 @@ module.exports = function(){
 		}
 	}
 
-	//test client=================================
+	//client=================================
 	
+	var leaveCtrl=this.leaveProcess;
+		
+	var Interface=function(token){//interface class
+		
+		var getToken=function(){};
+		
+		var stat= new function(token){//defined interfacing varibales
+			var Token=token;//a unique identifier
+			this.inProcess=false;//user is inside module
+			this.isHost=false;//user is host
+			this.isVIP=false;//a varibale that can be alters via the interface
+			this.serverId;//serverID the id of the running modules the user is subscribed to
+			this.localId;//gives a user a localId when they join or initiate a module
+			this.staticFunction;//if defined all messages from this user will will be passed to a specific function regardless of what the package contains
+			getToken=function(){return Token};//return private token variable
+			this.matchToken=function(Toke){return Toke===Token?true:false;};
+		}
+
+		function getClientInList(client){//get all client in that is subscried to a module
+			//console.log(processList[client.api.getStat().serverId].clients+"  eiufuiwefneufuewfnenfuwefwenfuwenfweuf");
+			return processList[client.api.getStat().serverId].clients[client.api.getStat().localId];
+		}
+
+		function verifiedClient(client){//test if client hasn't been altered 
+			if(client.api.getStat().matchToken(getToken())&&json.matchObject(client.api.getStat(),getClientInList(client).api.getStat())){
+				return true;
+			}
+			return false;
+		}
+
+		function updateClient(client){//update the origin client in the module list
+			json.overwriteObject(client.api.getStat(),getClientInList(client).api.getStat());
+		}
+
+
+		this.getStat=function(){
+			return stat;
+		};
+
+
+		this.getClients=function(client){// get all clients of a module
+			if(verifiedClient(client)){
+				var oldArray=processList[client.api.getStat().serverId].clients;
+				var newArray=new Array;
+				for(var i=0;i<oldArray.length;i++){
+					newArray[i]=json.cloneObject(oldArray[i]);
+				}
+				return newArray;
+			}else{
+				console.log("failed modified client client");
+				//return processList[client.api.getStat().serverId].clients;
+			}
+			updateClient(client);
+		};
+
+
+		this.setVIP_user=function(client){//alter the vip variable in stat class
+			if(verifiedClient(client)){
+				var originalClient=processList[client.api.getStat().serverId].clients[client.api.getStat().localId];
+				originalClient.api.getStat().isVIP=!originalClient.api.getStat().isVIP;
+			}else{
+				console.log("failed modified client client");
+			}
+			updateClient(client);
+		};
+
+		this.kickUser=function(client){//remove client from module controller
+			if(verifiedClient(client)){
+				leaveCtrl(getClientInList(client));
+			}else{
+				console.log("failed modified client client");
+			}
+			client===undefined;
+		};
+
+		this.setStaticFunction=function(func,client){//assign the static function
+			//console.log("niti");
+			if(verifiedClient(client)){
+				//console.log("success");
+				processList[client.api.getStat().serverId].clients[client.api.getStat().localId].api.getStat().staticFunction=func;
+			}else{
+				//processList[client.api.getStat().serverId].clients[client.api.getStat().localId].api.getStat().staticFunction=func;
+				console.log("failed modified client client");
+			}
+			updateClient(client);
+		};
+
+		//dagerous allowing users to create functions will compromise data may work if only allowed to store variables
+		/*add_custom_attribute:function(name,value,client){
+			//console.log("niti");
+			if(verifiedClient(client)){
+				//console.log("success");
+				processList[client.serverId].clients[client.localId].attribute[name]=value;
+			}else{
+				console.log("failed modified client client");
+			}
+			updateClient(client);
+		}*/
+
+    };
 	
+	////=================================================
 	this.interface= function(){//retunr a new instance of interface
 		return new Interface(0);
 	}
