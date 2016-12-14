@@ -65,7 +65,7 @@ mqtt_loop(Broker) ->
 	
 % Connect to the mqtt broker
 connect_to_broker() -> 
-	{ok, Broker} = emqttc:start_nonelink([
+	{ok, Broker} = emqttc:start_link([
 		{host, relay_config_accesser:get_field(broker_host)},
 		{port, relay_config_accesser:get_field(broker_port)},
 		{client_id, relay_config_accesser:get_field(user)},

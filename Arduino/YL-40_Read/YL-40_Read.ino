@@ -2,14 +2,17 @@
 // I2C Scanner
 // Written by Nick Gammon
 // Date: 20th April 2011
+// Modified by Isar Arason
+// Date: 1st Dec 2016
 
+// Handles I2C reading of the sensor chip 
 #include <Wire.h>
-#define PCF8591 (0x90 >> 1)      // Device address = 0       
+#define PCF8591 (0x90 >> 1)  // Device address = 0       
 #define PCF8591_DAC_ENABLE 0x40
 #define PCF8591_ADC_CH0 0x40 // Photo senosr
 #define PCF8591_ADC_CH1 0x41 // Thermistor
-#define PCF8591_ADC_CH2 0x42
-#define PCF8591_ADC_CH3 0x43  // Pot
+#define PCF8591_ADC_CH2 0x42 // Unused ADC pin
+#define PCF8591_ADC_CH3 0x43 // Potentiometer
 
 byte adc_value;  
 byte getADC(byte config)
@@ -36,6 +39,7 @@ void serialEvent() {
       // read the incoming byte:
       char incomingByte = (char)Serial.read();
       
+      // Requested pin char
       switch(incomingByte)
       {
         case '0':

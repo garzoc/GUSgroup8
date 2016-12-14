@@ -1,5 +1,4 @@
 -module(relay_node_sender).
--author("Isar Arason").
 -export([start/0, send_message/1]).
 
 % Starts a process using IP and port in config file
