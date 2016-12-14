@@ -1,10 +1,10 @@
--module(sensor_package_sender).
+-module(sensor_hub_sender).
 -author("Isar Arason").
 -export([start/0, send_message/1, send_dispatch/0, connect/0]).
 
 % Starts a process using IP and port in config file
 start() -> 
-	case whereis(package_sender) of
+	case whereis(hub_sender) of
 		undefined ->
 			Pid = spawn_link(fun() -> 
 					loop(
@@ -13,31 +13,27 @@ start() ->
 					connect()
 				) end
 			),
-			register(package_sender, Pid);
+			register(hub_sender, Pid);
 		_ ->
-			Pid = package_sender
+			Pid = hub_sender
 	end,
 	Pid.
 
 % Queues message for sending
 send_message(Message) -> 
-	io:fwrite("Sending !!!!!! ~p~n", [Message]),
-	package_sender ! {pkg_msg, Message}.
+	hub_sender ! {pkg_msg, Message}.
 
+% Queues a dispatch message indicating the collected data should be sent off
 send_dispatch() ->
-	io:fwrite("Sent dispatch message~n"),
-	package_sender ! dispatch.
+	hub_sender ! dispatch.
 
 % Buffers incoming messages
-% If (now - LastTime) is 5 or greater, send queued messages
 loop(Message, LastTime, Socket) ->
 	% Add message to existing message
 	receive
 		dispatch ->
-			io:fwrite("Received dispatch message~n"),
 			ok;
 		{pkg_msg, M} -> 
-			io:fwrite("Received sensor data message~n"),
 			loop(Message ++ [M], LastTime, Socket)
 	end,
 
@@ -45,21 +41,21 @@ loop(Message, LastTime, Socket) ->
 
 % Sends a message. If socket doesn't work, try to reconnect until success.
 dispatch(Message, Socket) ->
-	io:fwrite("Package | Sending message: ~n~p~n", [Message]),
+	io:fwrite("Hub | Sending message: ~n~p~n", [Message]),
 	case gen_tcp:send(Socket, 
 		[atom_to_binary(M, utf8) || M <- Message]) of
 		{error, Reason} ->
-			io:fwrite("Package | Failed to dispatch, reconnecting.~p~n", [Reason]),
+			io:fwrite("Hub | Failed to dispatch, reconnecting.~p~n", [Reason]),
 			dispatch(Message, connect());
 		ok ->
-			io:fwrite("Package | Successfully dispatched.~n", []),
+			io:fwrite("Hub | Successfully dispatched.~n", []),
 			Socket
 	end.
 
 % Tries to set up a connection until success
 connect() ->
 	% Split list and join swapped pieces
-	% Approaches equal number of connections per valid relay
+	% Approaches equal distribution of connections per valid relay
 	Relays = config_accesser:get_field(relays),
 	Index = trunc(random:uniform() * length(Relays)),
 	{A, B} = lists:split(
@@ -73,10 +69,10 @@ connect([{IP, Port} | Ls]) ->
 	IP, Port,
 	[{mode, binary}]) of
 		{ok, Socket} ->
-			io:fwrite("Package | Successfully reconnected.~n", []),
+			io:fwrite("Hub | Successfully reconnected.~n", []),
 			Socket;
 		{error, Reason} ->
-			io:fwrite("Package | Failed to connect to ~p, retrying. ~p~n", [{IP, Port}, Reason]),
+			io:fwrite("Hub | Failed to connect to ~p, retrying. ~p~n", [{IP, Port}, Reason]),
 			timer:sleep(2000),
 			connect(Ls)
 	end;
@@ -84,6 +80,7 @@ connect([{IP, Port} | Ls]) ->
 % Retry
 connect([]) -> connect().
 
+% Returns current Unix time
 get_time() ->
 	{MegaSecs, Secs, _} = now(),
 	MegaSecs * 1000000 + Secs.

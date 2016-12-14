@@ -4,7 +4,6 @@
 
 % open a connection to the serial port
 open(SerialPortDirectory) ->
-	% SP ex.: "/dev/cu.wchusbserial1410"
   SerialPort = serial:start([{open, SerialPortDirectory}, {speed, 9600}]),
   {ok, SerialPort}.
 

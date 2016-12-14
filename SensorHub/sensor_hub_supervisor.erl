@@ -1,4 +1,4 @@
--module(sensor_package_supervisor).
+-module(sensor_hub_supervisor).
 -author("Isar Arason").
 -behaviour(supervisor).
 -export([start_link/0, init/1]).
@@ -9,7 +9,7 @@ start_link() ->
      {ok, Pid}.
 
 init([]) ->
-	io:format("~p (~p) starting...~n", [{global, sensor_package}, self()]),
+	io:format("~p (~p) starting...~n", [{global, sensor_hub}, self()]),
 	
 	
 	RestartStrategy = one_for_one,
@@ -25,6 +25,6 @@ init([]) ->
 	Type = worker,
 
 	% Spec of supervisor child
-	ChildSpecifications = {sensor_package, {sensor_package, start_link, []}, Restart, Shutdown, Type, [sensor_package]},
+	ChildSpecifications = {sensor_hub, {sensor_hub, start_link, []}, Restart, Shutdown, Type, [sensor_hub]},
 
 	{ok, {Flags, [ChildSpecifications]}}.

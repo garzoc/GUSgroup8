@@ -1,4 +1,4 @@
-% Formats a JSON package to be sent to the relay server
+% Formats a JSON packet to be sent to the relay server
 
 -module(sensor_json_formatter).
 -author("Isar Arason").
@@ -19,7 +19,7 @@ sensor_to_json(Value, SensorName) ->
 		],
 json:encode(M).
 
-	
+% Gets current Unix time
 get_time() ->
 	{MegaSecs, Secs, _} = now(),
 	MegaSecs * 1000000 + Secs.

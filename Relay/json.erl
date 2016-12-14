@@ -1,5 +1,4 @@
 -module(json).
-
 -export([decode/1,encode/1,list_to_array/2]).
 -define(leftBrack,32).
 
@@ -68,7 +67,6 @@ list_to_array(Arr,[44|Xs])->[Arr]++list_to_array([],Xs);
 list_to_array(Arr,[93|_])->[Arr];
 list_to_array(Arr,[91|Xs])->list_to_array(Arr,Xs);
 list_to_array(Arr,[X|Xs])->list_to_array(Arr++[X],Xs);
-%????????
 list_to_array(_,[])->[].
 
 %key is always string might be uneccasary function
@@ -111,7 +109,6 @@ json_find_end([125|_])->[];
 %loop tp next character
 json_find_end([X|Xs])->io:format("~p~n",[X]),json_find_end(Xs).
 
-%this might also be an unessacary functions that can be moved down to json_find_bracket
 json_find_qote([34|Xs])->{Key,String}=json_key_string([],Xs),{Value,String2}=json_find_colon(String),[{list_to_atom(Key),Value}]++json_find_end(String2);
 json_find_qote([_|Xs])->json_find_qote(Xs).
 
@@ -119,16 +116,4 @@ json_find_brack([123|Xs])->json_find_qote(Xs);
 json_find_brack([X|Xs])->io:format("~p~n",[X]),json_find_brack(Xs);
 json_find_brack(X)->io:format("~p",[X]).
 decode(String)->json_find_brack(String).
-
-%json:list_to_array([],"[10,10]").
-%json:decode("{\"hej\":\"hej\"}").
-%json:decode("{\"hej\":[10,10]}").
-%json:decode("{\"hej\":[10,48,10]}").
-%json:encode(json:decode("{\"hej\":[10,10]}")).
-
-%json:decode("{\"hej\":[],\"test\":[]}"). 
-%json:encode(json:decode("{\"hej\":[],\"test\":[]}")).
-
-%{ok,_}=file:consult("/Users/john/Desktop/test.conf"),json:read(json:start(),)
-
 
