@@ -1,5 +1,5 @@
 -module(relay_server).
--export([init/1, start_link/0,find_topic/1]).
+-export([init/1, start_link/0]).
 -behavior(gen_server).
 
 %% Start the relay with a supervisor
@@ -10,13 +10,18 @@ start_link() ->
 %% Starts the connection to the Node.js server as well as the mqtt Broker.
 init([]) ->
 	% Starts the node.js sender and links it to the main process 
-	% This allows the supervisor to restart them both if one fails.
+	% This allows the supervisor to re.start them both if one fails.
 	link(relay_node_sender:start()),
 	
 	% Start the broker sender and link it to this process.
 	% Registers the broker sender process to 'mqttprocess' for easy access
-	% register(mqttprocess, spawn_link(fun() -> connect_to_broker() end)), %broker
 	
+	case relay_config_accesser:get_field(support_broker) of
+		true ->
+			register(mqttprocess, spawn_link(fun() -> connect_to_broker() end)); %broker
+		_ -> ok
+	end,
+
 	% Opens a listening socket for receiving messages from sensor hubs
 	{ok,Listensocket} = gen_tcp:listen(
 		relay_config_accesser:get_field(relay_listen_port),
@@ -43,8 +48,7 @@ do_recv(Socket) ->
   case gen_tcp:recv(Socket, 0) of
     {ok, Bin} -> 
 	% If a message is received, handle it in process_message
-    	io:format("received tcp message~n"),
-		spawn(fun() -> process_message(Bin) end);
+	spawn(fun() -> process_message(Bin) end);
     {error, closed} -> exit(closed);
     {error, econnrefused} -> exit(closed);
     {error, Reason} -> exit(Reason)
@@ -68,12 +72,6 @@ connect_to_broker() ->
 		{debug, none}]), % Changed this, might cause something to break.
 		mqtt_loop(Broker).
 
-% get the topic information from sensor data% 
-find_topic(Data) ->
-	[{sensor_package,PKG}, {user, USR}, {group, GRP},_,_,_,_,_] = json:decode(binary_to_list(Data)),
-	Topic = GRP ++ "/" ++ USR ++ "/" ++ PKG,
-	list_to_binary(Topic).
-
 % Send data to the Mqtt broker
 send_to_broker(Broker, Topic, Data) -> 	
     	emqttc:publish(Broker, Topic, Data).
@@ -84,39 +82,44 @@ process_message(Data) ->
 	% Forward the data to the Node.js server
     	relay_sender!{rly_msg, Data},
 	
-	% Unpack the received data 
-	[
-		{group, Group},
-		{user, User},
-		{sensor_hub, Hub_name},
-		{sensorID, SensorName},
-		{value, Value},
-		{sensor_unit, SensorUnit},
-		{timestamp, Timestamp},
-		_,
-		{publish_to_broker, PubToBroker}
-	] = json:decode(binary_to_list(Data)),
-	
-	% If the incoming message wants to be sent to the broker as well
-	case PubToBroker of
+	case relay_config_accesser:get_field(support_broker) of
 		true -> 
-			Topic = Group ++ "/" ++ User ++ "/" ++ Hub_name,
+		% Unpack the received data 
+		[
+			{group, Group},
+			{user, User},
+			{sensor_hub, Hub_name},
+			{sensorID, SensorName},
+			{value, Value},
+			{sensor_unit, SensorUnit},
+			{timestamp, Timestamp},
+			_,
+			{publish_to_broker, PubToBroker}
+		] = json:decode(binary_to_list(Data)),
+	
+		% If the incoming message wants to be sent to the broker as well
+		case PubToBroker of
+			true -> 
+				Topic = Group ++ "/" ++ User ++ "/" ++ Hub_name,
 
-			% Reormat and encode the data for public viewing
-			MqttData = json:encode
-			([
-				{'Group', Group},
-				{'User', User},
-				{'Sensor_hub', Hub_name},
-				{'SensorID', SensorName},
-				{'Value', Value},
-				{'Sensor_unit', SensorUnit},
-				{'Timestamp', Timestamp}
-			]),
+				% Reormat and encode the data for public viewing
+				MqttData = json:encode
+				([
+					{'Group', Group},
+					{'User', User},
+					{'Sensor_hub', Hub_name},
+					{'SensorID', SensorName},
+					{'Value', Value},
+					{'Sensor_unit', SensorUnit},
+					{'Timestamp', Timestamp}
+				]),
 
-			% Send formatted data and topic
-			mqttprocess ! {mqtt_msg, {Topic, MqttData}};
-		_ -> ok
+				% Send formatted data and topic
+				mqttprocess ! {mqtt_msg, {Topic, MqttData}};
+			_ -> ok
+		end;
+		_ ->
+			ok
 	end.
 
 

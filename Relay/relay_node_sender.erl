@@ -27,7 +27,7 @@ loop(Socket) ->
 	% Add incoming message to existing message
 	receive
 		{rly_msg, M} -> 
-			io:fwrite("received message~n"),
+			io:fwrite("Relay | Received message~n"),
 			loop(dispatch(M, Socket))
 	end.
 
@@ -38,7 +38,7 @@ dispatch(Message, Socket) ->
 			io:fwrite("Relay | Failed to dispatch, reconnecting.~p~n", [Reason]),
 			dispatch(Message, connect());
 		ok ->
-			io:fwrite("Relay | Successfully dispatched. ~p~n", [Message]),
+			io:fwrite("Relay | Successfully dispatched.~n"),
 			Socket
 	end.
 
@@ -58,10 +58,3 @@ connect() ->
 			timer:sleep(2000),
 			connect()
 	end.
-
-
-
-
-
-
-
