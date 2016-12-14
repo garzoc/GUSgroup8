@@ -1,0 +1,17 @@
+<div class="jumbotron">
+  <h2 >{{ selectedHub }}</h2>
+  <ul class="places">
+
+    <!-- cards are created dynamically-based on how many elements there are in the package array-->
+    <div ng-repeat="k in sensorArray" class="panel panel-default" >
+      <div>
+        {{k.sensor_id}}
+      </div>
+      <p id={{k.sensor_id}}> </p>{{k.unit_type}}
+    <div class="panel-footer"><a href="#">Details</a></div>
+    </div>
+
+
+
+  </ul>
+</div>

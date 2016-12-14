@@ -1,0 +1,40 @@
+<div class="row col-md-6 col-md-offset-3">
+
+	<div class="jumbotron">
+		<h1>Login</h1>
+
+		<form ng-submit="login.doLogin()">
+
+			<div class="form-group">
+				<label>Username</label>
+				<input type="text" class="form-control" ng-model="login.loginData.username">
+			</div>
+
+			<div class="form-group">
+				<label>Password</label>
+				<input type="password" class="form-control" ng-model="login.loginData.password">
+			</div>
+
+			<div class="alert alert-danger" ng-if="login.error">
+				{{ login.error }}
+			</div>
+
+			<div class="alert alert-success" ng-if="login.success">
+				{{ login.message }}
+			</div>
+
+			<button type="submit" class="btn btn-block">
+				<span>Login</span>
+			</button>
+<br>
+		</form>
+
+		<a href='#' ng-click="login.doRegister()" >
+		<button class="btn btn-block">
+			<span>Register</span>
+		</button>
+		</a>
+
+	</div>
+
+</div>

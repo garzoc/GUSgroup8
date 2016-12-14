@@ -1,0 +1,70 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+
+  html, body {
+	margin:0;
+	padding:0;
+	height:100%;
+	width:100%;
+}
+
+
+
+html {
+  /* position: relative; */
+  /* min-height: 100%; */
+}
+body {
+  /* Margin bottom by footer height */
+
+}
+
+
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+/*.header{
+	position:fixed;
+	top:0;  border: 2px solid black;
+
+	width:100%;
+}*/
+.btn.btn-block {
+	border-radius: 0px;
+  background-color: red;
+}
+
+
+.container {
+	position:relative;
+	width: 100%;
+	/*max-width: 680px;*/
+	/*padding: 0 15px;*/
+	padding-left: 0px;
+	padding-right: 0px;
+	min-height: calc(100% - 211px);
+	height: calc(auto - 300px);
+
+}
+
+.ngview{
+	
+	margin:auto;
+	width: 100%;
+	max-width: 680px;
+
+
+}
+
+.footer{
+  position: relative;
+  bottom:0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #000000;
+  
+}
