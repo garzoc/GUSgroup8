@@ -21,14 +21,14 @@ read_all(Receiver, SerialPort, [{SensorName, _, PinName} | Ls]) ->
 	case Value of
 		timeout ->
 			ok;
-		_ ->			
+		_ ->
 			io:fwrite("Received: ~p~n", [{SensorName, integer_to_list(hd(Value))}]),
 			Receiver ! {SensorName, Value}
 	end,
 
 	read_all(Receiver, SerialPort, Ls);
 	
-read_all(_, _, []) -> ok.
+read_all(Receiver, _, []) -> Receiver ! dispatch.
 
 get_value(SerialPort, PinName) ->
 	% Todo - timeouts and error recovery

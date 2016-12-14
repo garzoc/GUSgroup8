@@ -1,6 +1,6 @@
 -module(sensor_package_sender).
 -author("Isar Arason").
--export([start/0, send_message/1, connect/0]).
+-export([start/0, send_message/1, send_dispatch/0, connect/0]).
 
 % Starts a process using IP and port in config file
 start() -> 
@@ -21,26 +21,27 @@ start() ->
 
 % Queues message for sending
 send_message(Message) -> 
+	io:fwrite("Sending !!!!!! ~p~n", [Message]),
 	package_sender ! {pkg_msg, Message}.
+
+send_dispatch() ->
+	io:fwrite("Sent dispatch message~n"),
+	package_sender ! dispatch.
 
 % Buffers incoming messages
 % If (now - LastTime) is 5 or greater, send queued messages
 loop(Message, LastTime, Socket) ->
 	% Add message to existing message
 	receive
+		dispatch ->
+			io:fwrite("Received dispatch message~n"),
+			ok;
 		{pkg_msg, M} -> 
-			NewMessage = Message ++ [M]
+			io:fwrite("Received sensor data message~n"),
+			loop(Message ++ [M], LastTime, Socket)
 	end,
-	
-	% Check time difference and dispatch if excdispatch_intervaleeded
-	I = get_time() - LastTime,
-	DispatchInterval = (config_accesser:get_field(dispatch_interval) / 1000),
-	if
-		I >= DispatchInterval andalso (Message =/= []) -> 
-			loop([], get_time(), dispatch(Message, Socket));
-		true ->
-			loop(NewMessage, LastTime, Socket)
-	end.
+
+	loop([], get_time(), dispatch(Message, Socket)).
 
 % Sends a message. If socket doesn't work, try to reconnect until success.
 dispatch(Message, Socket) ->

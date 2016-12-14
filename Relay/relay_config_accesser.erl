@@ -2,7 +2,7 @@
 -author("Emanuel Mellblom").
 -export([get_field/1]).
 
-% Open config file and find the value associated with the key
+% Opens the relay config file and finds the value associated with the key
 get_field(Field) ->
 	{ok, File} =  file:consult("relay_config.conf"),
 	get_field(Field, File).

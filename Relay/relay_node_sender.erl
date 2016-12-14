@@ -24,11 +24,10 @@ send_message(Message) ->
 
 % Sends tcp message
 loop(Socket) ->
-	% Add message to existing message
-	io:fwrite("loop~n"),
+	% Add incoming message to existing message
 	receive
 		{rly_msg, M} -> 
-			io:fwrite("receive message~n"),
+			io:fwrite("received message~n"),
 			loop(dispatch(M, Socket))
 	end.
 
@@ -43,13 +42,13 @@ dispatch(Message, Socket) ->
 			Socket
 	end.
 
-% Tries to set up a connection until success
-	connect() ->
+% Tries to set up a connection to the destination (Node.js server) until successful
+connect() ->
 	case gen_tcp:connect(relay_config_accesser:get_field(node_ip),
 		relay_config_accesser:get_field(node_port),
 		[{mode, binary}]) of
 		{ok, Socket} ->
-			%Initmessage = "{\"context\":{\"name\":\"hej\",\"type\":\"package\"},\"use\":\"initProcess\"}",
+			% Init message used to set up the incoming connection
 			Initmessage = "{\"use\":\"joinProcess\",\"context\":{\"serverId\":0}}",
 			gen_tcp:send(Socket, Initmessage),
 			io:fwrite("Relay | Successfully reconnected.~n", []),
