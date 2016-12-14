@@ -24,6 +24,7 @@ var config = require('../../config');
 var User = require('../models/User');
 var Sensor_hub = require('../models/Sensor_hub');
 var Sensor = require('../models/Sensor');
+var Value = require('../models/Value')
 
 //secret-salt for creating the Authorization tokens
 var superSecret = config.secret
@@ -91,13 +92,23 @@ module.exports = function(app, express) {
 
 	// POST request at host.host.host/api/sensors - Used to get the sensors for a user's sensor hub from the DB
 	apiRouter.post('/sensors', function(req, res) {
-		Sensor.find({owner : req.body.username, host : req.body.package}).exec(function(err, sensor) {
+		Sensor.find({owner : req.body.username, host : req.body.sensor_hub}).exec(function(err, sensor) {
 			if (err) throw err;
 			res.json({
 				// returns a list of sensors
 				array : sensor
 			});
 		});
+	});
+
+	apiRouter.post('/details', function(req, res) {
+		var value = new Value();
+		var digest = value.getDigest(req.body.sensor_id, req.body.range, function(digest){
+			res.json({
+				values : digest
+			});
+		});
+
 	});
 
 	// POST at host.host.host/api/authenticate - Used to transfer login attempts to the server and validate a user

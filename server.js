@@ -22,6 +22,8 @@ var bodyParser     = require('body-parser');
 var config = require('./config');
 // Importing and initiating the websockets server
 var server = require('./app/modules/sockets.js').init(config.socketsPortFE,config.socketsPortBE);
+// Optional testing Suite
+var test = require('./testing/testSuite.js');
 // Initialising the express framework for handling the routing
 var app = express();
 //bodyparser setup
@@ -72,6 +74,9 @@ app.get('*', function(req, res) {
 
 // Start listening for HTTP traffic
 app.listen(config.httpPort);
+
+//testing init
+test.startTest();
 
 // from here on, what does all this do and why do we still need it
 var modJoin=new Object;
