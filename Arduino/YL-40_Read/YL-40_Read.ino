@@ -34,6 +34,34 @@ void setup() {
   Wire.begin();
 }
 
+///// Instructions /////
+//
+//    To add or modify the sensors, extend the
+//    switch statement in serialEvent to read
+//    and return the values from your sensors,
+//    then add the new sensor to the config.conf file.
+//
+//    All other code in this script is optional;
+//    only the serialEvent() implementation is required.
+//
+//    Ex.
+//	A new method, readThermometer(), is implemented,
+//      and the following is appended to the switch
+//	inside serialEvent():
+//
+//	case 'b':
+//	    Serial.write(readThermometer());
+//
+//	A new line is added to the sensor field within
+//	the config.conf file:
+// 
+//		{new_thermometer, C, "b"}
+//
+//	The sensor hub software will now read this new sensor
+//	and forward the data to a relay.
+//
+////////////////////////
+
 void serialEvent() {
   while (Serial.available()) {
       // read the incoming byte:
