@@ -76,7 +76,7 @@ app.get('*', function(req, res) {
 app.listen(config.httpPort);
 
 //testing init
-test.startTest();
+//test.startTest();
 
 // from here on, what does all this do and why do we still need it
 var modJoin=new Object;

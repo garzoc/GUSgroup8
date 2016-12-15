@@ -1,7 +1,9 @@
 var mod=module.exports;
 var json=require('./jsonObj.js');
 var query = require('../models/QueryBuilder.js');
-
+var mqtt=require("mqtt");
+var mqttClient  = mqtt.connect('mqtt://prata.technocreatives.com')
+var Id;
 
 var packageList=new Array;
 //socket.send('{"use":"joinProcess","context":{"serverId" : 0}}');
@@ -11,14 +13,24 @@ mod.init=function(host){
 	 //console.log("wjenfwejkfwefnwekfwekn");
 	host.api.setStaticFunction("onMessage",host);
 	host.api.setVIP_user(host);
-	 //console.log(host.api.getStat().localId);
-	 //console.log(host.api.getStat().staticFunction);
-	 //console.log(host.api.getStat().isVIP);
-			//client.api.kickUser(client);
+
+	/*mqttClient.on('connect', function () {
+  		this.subscribe('dit029/SmartMirror/SmartMirrorID/deviceStatus');
+	});*/
+	Id=randomId();
 
 };
 
 
+function randomId(){
+	var s = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~';
+	var container="";
+	for(var i=0;i<32;i++){
+		container=container+Math.floor((Math.random())*0x10000).toString(16).substring(1);
+	}
+	
+	return container;
+}
 
 
 
@@ -51,31 +63,34 @@ function msg(data,client){
 
 
 
-function to_smartMirror(pack){
+function to_smartMirror(time,cont){
 
 	return {
-		messageFrom:pack.user,
-		timestamp:pack.timestamp,
-		sharedContent:pack.sensor_hub,
-		content:[new Object]
+		//messageFrom:pack.user,
+		messageFrom:Id,
+		timestamp:time,
+		//sharedContent:pack.sensor_hub,
+		sharedContent:"device status",
+		content:[cont]
 	}
 
 }
 
+var senders=new Object();
+
 mod.onMessage=function(data,client){
-	console.log(data);
-	//counter++;
-	//console.log(counter);
-	//console.log(data);
-	//1478179373
-	//console.log(data+"  god morgin");
+
+to_smartMirror
 	if(data.constructor===Array && data.length>1) {
 		//console.log("data is array ??????????????????????????????????????????????????????+");
 		var sPacket=new Object;
 		for(var i=0;i<data.length;i++) {//rewtire package to smart mirror
 			data[i]=JSON.parse(data[i])
+			
 			if(data[i].smart_mirror_ID!==undefined){
-				if(sPacket[data[i].sensor_hub]===undefined)sPacket[data[i].sensor_hub]=to_smartMirror(data[i]);//defined a new smart mirror package
+				senders[data[i].user+"/"+data[i].senor_hub].timestamp=data[i].timestamp;
+				senders[data[i].user+"/"+data[i].senor_hub].smart_mirror_ID=data[i].smart_mirror_ID;
+			/*	if(sPacket[data[i].sensor_hub]===undefined)sPacket[data[i].sensor_hub]=to_smartMirror(data[i]);//defined a new smart mirror package
 				if(sPacket[data[i].sensor_hub].messageFrom===data[i].user){//if the groups are owned by the same user
 					sPacket[data[i].sensor_hub].content[0][data[i].sensorID]=data[i].value;
 				}else{
@@ -87,16 +102,26 @@ mod.onMessage=function(data,client){
 							break;
 						}
 					}
-				}
+				}*/
 			}
 		}
 		
-		console.log(JSON.stringify(sPacket));
+		for(k in senders){
+			console.log(senders[k]+"   ===============================================================================================");
+			if(data[0].timestamp-(30)>senders[k].timestamp){
+				var content=new Object;
+				content[k]="off";
+				mqttClient.publish('dit029/SmartMirror/'+senders[k].smart_mirror_ID+'/deviceStatus',JSON.stringify(to_smartMirror(senders[k].timestamp,content)));
+				console.log("dropped connection ====================================");
+			}
+		}
+		
+		//console.log(JSON.stringify(sPacket));
 		
 
 
 		for(var i=0;i<data.length;i++){
-			console.log(data[i]);
+			//console.log(data[i]);
 			msg(data[i],client);
 			query.checkUser(data[i]);
 		}

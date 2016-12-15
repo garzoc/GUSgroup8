@@ -5,6 +5,8 @@ module.exports = {
 startTest:function(){
   //add references to functions defined below for various testing
 //  st(); //this one creates dummy values for use with mongo without having to rely on the relays or the value generators
+setInterval(function(){st()}, 500);
+
 }
 
 };
@@ -31,7 +33,6 @@ st = function(){
     console.log(Date.now());
 };
 
-setInterval(function(){st()}, 500);
 
 createPayload = function(){
   var payload = {};

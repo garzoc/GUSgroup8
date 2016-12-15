@@ -153,7 +153,7 @@ module.exports = function(){
 
   //message processor==============================================0
 	this.decode=function(stringData){
-		console.log(stringData);
+		//console.log(stringData);
 		//var packetStruct=stringData.split("::");
 	
 		
