@@ -129,7 +129,6 @@ function storeValue(message){
       else
         return console.log(err);
     }
-    console.log('value stored!');
   });
 };
 
