@@ -11,6 +11,8 @@
 		<!--bootstrap/ later replace the link with locally hosted version (install with bower)-->
 		<link rel="stylesheet" href="assets/libs/bootstrap/dist/css/bootstrap.min.css">
 		<link rel="stylesheet" href="assets/libs/animate.css/animate.min.css">
+		<link rel="stylesheet"  href="assets/css/layout.css">
+
 		<link rel="stylesheet" id="customCSS" href="assets/css/light.css">
 
 		<!-- JS -->
@@ -42,17 +44,21 @@
 				<div class="container">
 					<div class="navbar-header">
 						<a href="/" class='navbar-brand'><span class="glyphicon"><img src="assets/img/logo.png" alt=""
-						class="logo" height ="30px"/></span> Sensor Monitoring System</a>
+						class="logo" height ="40px" width="110px"/></span> Sensor Monitoring System</a>
 					</div>
 				</div>
 
 				<ul class="nav navbar-nav">
-					<li><a href="#" ng-click="main.setTheme('dark')">Dark</a></li>
-					<li><a href="#" ng-click="main.setTheme('light')">Light</a></li>
-					<li ng-if="main.loggedIn"><a href="/settings">Settings</a></li>
-					<li ng-if="main.loggedIn"><a href="/packages">Packages</a></li>
+
+				    <li><a href="#">Setting</a>
+                       <ul>
+					     <li><a href="#" ng-click="main.setTheme('dark')">Dark</a></li>
+					     <li><a href="#" ng-click="main.setTheme('light')">Light</a></li>
+                       </ul>
+					</li>
+					
 					<li ng-if="main.loggedIn"><a href="#" ng-click="main.doLogout()">Logout</a></li>
-				</ul>
+				</div>
 			</div>
 		</header>
 
