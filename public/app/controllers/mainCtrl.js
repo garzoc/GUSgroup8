@@ -149,6 +149,8 @@ angular.module('mainCtrl', ['chart.js'])
 	};
 
 	vm.getSensor = function(sensor, range) {
+		$rootScope.chartdata = [];
+		$rootScope.chartlabels = [];
 		$rootScope.selectedSensor = sensor;
 		Auth.getSensor($rootScope.user, $rootScope.selectedHub, sensor, range).then(function(data){
 			$rootScope.valueDigest = data.data.values;
@@ -159,14 +161,28 @@ angular.module('mainCtrl', ['chart.js'])
 	};
 
 	changeChart = function(range, values){
-		//if (range == 666000000) {
-		$rootScope.chartdata = [];
+
+
+		if (range == 300000) {		// 5 minutes in ms
 		values.forEach(function(entry){
 			$rootScope.chartdata.push(entry.value);
 		});
-		$rootScope.chartlabels = ["60min ago", "50min ago", "40min ago", "30min ago", "20min ago", "10min ago", "just now"];
-	//}
+		$rootScope.chartlabels = ["60min ago", "", "", "", "", "50min ago", "", "", "", "", "40min ago", "", "", "", "", "30min ago", "", "", "", "", "20min ago", "", "", "", "", "10min ago", "", "", "", "", "just now"];
+	}
+	else if (range == 600000) {	//10 minutes in ms
+		values.forEach(function(entry){
+			$rootScope.chartdata.push(entry.value);
+		});
+		$rootScope.chartlabels = ["24hrs ago", "", "", "", "", "20hrs ago", "", "", "", "", "16hrs ago", "", "", "", "", "12hrs ago", "", "", "", "", "8hrs ago",  "", "", "", "","1hr ago", "", "", "", "", "just now"];
+	}
+	else if (range == 900000) {	//15 minutes in ms
+		values.forEach(function(entry){
+			$rootScope.chartdata.push(entry.value);
+		});
+		$rootScope.chartlabels = ["3d ago", "", "", "", "", "", "", "", "", "2d ago", "", "", "", "", "", "", "", "", "1d ago", "", "", "", "", "", "", "", "", "", "just now"];
+	}
 	};
+
 	//real time DOM manipulation, according to the incoming messages
 	vm.updateValue = function(incoming){
 		document.getElementById(incoming.sensorID).innerHTML = incoming.value;

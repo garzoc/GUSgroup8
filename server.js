@@ -1,5 +1,5 @@
 //
-//	Authors 		: Ioannis Gkikas
+//	Authors 		: Ioannis Gkikas, John Sundling
 //	Description : The main server file. Using the node.js infrastructure, this file can be run in a V8 Virtual Machine.
 //								all the WebServer components are imported and initialised here.The main thread starts here, as well
 //								as the event loop.It is the equivalent of the void Main() function of JAVA applications
@@ -76,7 +76,7 @@ app.get('*', function(req, res) {
 app.listen(config.httpPort);
 
 //testing init
-//test.startTest();
+test.startTest();
 
 // from here on, what does all this do and why do we still need it
 
@@ -88,7 +88,6 @@ modInit.type="package";
 var client=server.dummy();
 var client1=server.dummy();
 
-//console.log(client1);
 server.initProcess(modInit,client);
 //server.leaveProcess(client);
 //server.msgRelay('{"hej":"pa dig"}',client);
