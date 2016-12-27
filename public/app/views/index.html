@@ -9,19 +9,24 @@
 		<base href="/"/>
 		<!--CSS-->
 		<!--bootstrap/ later replace the link with locally hosted version (install with bower)-->
+		<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link rel="stylesheet" href="assets/libs/bootstrap/dist/css/bootstrap.min.css">
 		<link rel="stylesheet" href="assets/libs/animate.css/animate.min.css">
-		<link rel="stylesheet"  href="assets/css/layout.css">
+		<link rel="stylesheet" href="assets/libs/materialize/dist/css/materialize.css">
+		<link rel="stylesheet"  href="assets/css/laysout.css">
 
-		<link rel="stylesheet" id="customCSS" href="assets/css/light.css">
+		<link rel="stylesheet" id="customCSS" href="assets/css/lisght.css">
 
 		<!-- JS -->
 		<!-- load angular and angular-route via CDN/later replace links with locally hosted versions -->
+		<script src="assets/libs/jquery/dist/jquery.js"></script>
 		<script src="assets/libs/chart.js/dist/Chart.min.js"></script>
 		<script src="assets/libs/angular/angular.min.js"></script>
 		<script src="assets/libs/angular-route/angular-route.js"></script>
 		<script src="assets/libs/angular-animate/angular-animate.js"></script>
 		<script src="assets/libs/angular-chart.js/dist/angular-chart.js"></script>
+		<script src="assets/libs/materialize/dist/js/materialize.js"></script>
+
 
 		<!--controllers-->
 		<script src="app/controllers/mainCtrl.js"></script>
@@ -47,16 +52,14 @@
 						class="logo" height ="40px" width="110px"/></span> Sensor Monitoring System</a>
 					</div>
 				</div>
-
-				<ul class="nav navbar-nav">
-
-				    <li><a href="#">Setting</a>
+						<a class='dropdown-button btn' data-activates='dropdown1' href="#">Setting</a>
+				    <li id="dropdown1" class="dropdown-content">
                        <ul>
 					     <li><a href="#" ng-click="main.setTheme('dark')">Dark</a></li>
 					     <li><a href="#" ng-click="main.setTheme('light')">Light</a></li>
                        </ul>
-					</li>
-					
+						</li>
+
 					<li ng-if="main.loggedIn"><a href="#" ng-click="main.doLogout()">Logout</a></li>
 				</div>
 			</div>

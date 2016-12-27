@@ -75,8 +75,7 @@ app.get('*', function(req, res) {
 // Start listening for HTTP traffic
 app.listen(config.httpPort);
 
-//testing init
-test.startTest();
+//testing init test.startTest();
 
 // from here on, what does all this do and why do we still need it
 
