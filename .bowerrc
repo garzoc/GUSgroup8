@@ -1,6 +1,0 @@
-{
-  "author": "",
-  "description": "used to store front end packages locallyinstead of importing them from remote domains",
-  "directory": "public/assets/libs/",
-  "path" : "/public/assets"
-}
