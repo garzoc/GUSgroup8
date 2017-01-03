@@ -78,7 +78,7 @@ app.listen(config.httpPort);
 
 console.log("webserver listening on port "+config.httpPort);
 //testing init
-test.startTest();
+//test.startTest();
 
 // from here on, what does all this do and why do we still need it
 
