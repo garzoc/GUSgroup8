@@ -7,7 +7,7 @@ angular.module('authService', [])
 // inject $q to return promise objects
 // inject AuthToken to manage tokens
 // ===================================================
-.factory('Auth', function($http, $q, AuthToken) {
+.factory('Auth', function($http, $q, AuthToken,AuthUser) {
 
 	// create auth factory object
 	var authFactory = {};
@@ -23,6 +23,7 @@ angular.module('authService', [])
 
 
 				var inc = data.data; //initially data.token sufficed but now data.data.token is needed
+				AuthUser.setUser(inc.user);
 				AuthToken.setToken(inc.token);
 				console.log(inc.token);
        			return inc;
@@ -34,6 +35,7 @@ angular.module('authService', [])
 	authFactory.logout = function() {
 		// clear the token
 		AuthToken.setToken();
+		AuthUser.setUser();
 	};
 
 	// check if a user is logged in
@@ -47,10 +49,7 @@ angular.module('authService', [])
 
 	// get the logged in user
 	authFactory.getUser = function() {
-		if (AuthToken.getToken())
-			return $http.get('/api/me', { cache: false });
-		else
-			return $q.reject({ message: 'User has no token.' });
+		return AuthUser.getUser();
 	};
 
 	authFactory.getPackages = function(user) {
@@ -107,6 +106,30 @@ angular.module('authService', [])
 	};
 
 	return authTokenFactory;
+
+})
+
+
+.factory('AuthUser', function($window) {
+
+	var authUserFactory = {};
+
+	// get the token out of local storage
+	authUserFactory.getUser = function() {
+		return $window.localStorage.getItem('user');
+	};
+
+	// function to set token or clear token
+	// if a token is passed, set the token
+	// if there is no token, clear it from local storage
+	authUserFactory.setUser = function(user) {
+		if (user)
+			$window.localStorage.setItem('user', user);
+	 	else
+			$window.localStorage.removeItem('user');
+	};
+
+	return authUserFactory;
 
 })
 

@@ -148,7 +148,8 @@ module.exports = function(app, express) {
 					res.json({
 						success: true,
 						message: 'Auth successful',
-						token: token
+						token: token,
+						user: req.body.username
 					});
 				}
 			}

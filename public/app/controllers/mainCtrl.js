@@ -27,6 +27,7 @@ angular.module('mainCtrl', ['chart.js'])
 	// check to see if a user is logged in on every request
 	$rootScope.$on('$routeChangeStart', function() {
 		vm.loggedIn = Auth.isLoggedIn();
+		$rootScope.user = Auth.getUser();
 
 		if($location.url()==="/sensors"){
 			//console.log("yoyo  "+socket);
@@ -59,7 +60,9 @@ angular.module('mainCtrl', ['chart.js'])
 			console.log(test.username);
 			* Angular is broken
 			* */
-			Auth.getPackages(user.username).then(function(data){
+			
+			//user.username
+			Auth.getPackages(Auth.getUser()).then(function(data){
 				$rootScope.packageArray = data.data.array;
 			});
 
@@ -69,10 +72,11 @@ angular.module('mainCtrl', ['chart.js'])
 
 		if(!vm.loggedIn)$location.path('/login');
 		// get user information on page load
-		Auth.getUser()
+		/*Auth.getUser()
 			.then(function(data) {
+				//console.log(data.data+"          wehruiwheufwhuifhwufweuihf");
 				vm.user = data.data;
-			});
+			});*/
 	});
 
 
