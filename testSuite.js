@@ -2,6 +2,7 @@ var exports = module.exports;
 
 exports.startTest = function(){
   //add references to functions defined below for various testing
+  setInterval(function(){st(client)}, 500);
 };
 
 
@@ -23,7 +24,7 @@ st = function(clnt){
 		server.msgRelay(msgg,client);
 };
 
-setInterval(function(){st(client)}, 500);
+
 
 var a = {
 	sensor_package : "Bathroom",

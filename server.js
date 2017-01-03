@@ -23,7 +23,7 @@ var config = require('./config');
 // Importing and initiating the websockets server
 var server = require('./app/modules/sockets.js').init(config.socketsPortFE,config.socketsPortBE);
 // Optional testing Suite
-//var test = require('./testing/testSuite.js');
+var test = require('./testing/testSuite.js');
 // Initialising the express framework for handling the routing
 var app = express();
 //bodyparser setup
@@ -78,7 +78,7 @@ app.listen(config.httpPort);
 
 console.log("webserver listening on port "+config.httpPort);
 //testing init
-//test.startTest();
+test.startTest();
 
 // from here on, what does all this do and why do we still need it
 
