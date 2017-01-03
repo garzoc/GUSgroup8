@@ -1,4 +1,4 @@
-angular.module('mainCtrl', [])
+angular.module('mainCtrl', ['chart.js'])
 
 .controller('mainController', function($rootScope, $location, Auth) {
 
@@ -8,6 +8,16 @@ angular.module('mainCtrl', [])
 	$rootScope.sensorArray = [];
 	$rootScope.user = "";
 	$rootScope.selectedHub = "";
+	$rootScope.selectedSensor = "";
+	$rootScope.valueDigest = "";
+	$rootScope.chartlabels = [];
+  $rootScope.chartseries = [];
+  $rootScope.chartdata = [];
+  chartClick = function (points, evt) {
+    //console.log(points, evt);
+  };
+  $rootScope.chartdatasetOverride = [];
+  $rootScope.chartoptions = {};
 
 
 
@@ -17,7 +27,7 @@ angular.module('mainCtrl', [])
 	// check to see if a user is logged in on every request
 	$rootScope.$on('$routeChangeStart', function() {
 		vm.loggedIn = Auth.isLoggedIn();
-		
+
 		if($location.url()==="/sensors"){
 			//console.log("yoyo  "+socket);
 			if(socket===undefined){
@@ -28,7 +38,7 @@ angular.module('mainCtrl', [])
 				//socket.send('{"use":"initProcess","context":{"name" : "boo","type":"test"}}');
 				//socket.send('{"use":"lol"}');
 			};
-		
+
 			socket.onmessage=function(e){
 				console.log(e);
 				updateValue(e);
@@ -42,9 +52,9 @@ angular.module('mainCtrl', [])
 		}else{
 			if(socket!==undefined)socket.close();
 		}
-		
+
 		if($location.url()==="/sensors"||$location.url()==="/packages"){
-		
+
 			/*var test=vm.loginData;
 			console.log(test.username);
 			* Angular is broken
@@ -52,11 +62,11 @@ angular.module('mainCtrl', [])
 			Auth.getPackages(user.username).then(function(data){
 				$rootScope.packageArray = data.data.array;
 			});
-	
-		
-				
+
+
+
 		}
-		
+
 		if(!vm.loggedIn)$location.path('/login');
 		// get user information on page load
 		Auth.getUser()
@@ -87,7 +97,7 @@ angular.module('mainCtrl', [])
 					$location.path('/packages');
 
 
-				
+
 				}
 
 				else{
@@ -132,10 +142,45 @@ angular.module('mainCtrl', [])
 
 	vm.getSensors = function(host) {
 			$rootScope.selectedHub = host;
-		Auth.getSensor($rootScope.user,host).then(function(data){
+		Auth.getSensors($rootScope.user,host).then(function(data){
 			$rootScope.sensorArray = data.data.array;
 			$location.path('/sensors');
 		});
+	};
+
+	vm.getSensor = function(sensor, range) {
+		$rootScope.chartdata = [];
+		$rootScope.chartlabels = [];
+		$rootScope.selectedSensor = sensor;
+		Auth.getSensor($rootScope.user, $rootScope.selectedHub, sensor, range).then(function(data){
+			$rootScope.valueDigest = data.data.values;
+			console.log($rootScope.valueDigest);
+			changeChart(range, $rootScope.valueDigest);
+			$location.path('/details');
+		});
+	};
+
+	changeChart = function(range, values){
+
+
+		if (range == 300000) {		// 5 minutes in ms
+		values.forEach(function(entry){
+			$rootScope.chartdata.push(entry.value);
+		});
+		$rootScope.chartlabels = ["60min ago", "", "", "", "", "50min ago", "", "", "", "", "40min ago", "", "", "", "", "30min ago", "", "", "", "", "20min ago", "", "", "", "", "10min ago", "", "", "", "", "just now"];
+	}
+	else if (range == 600000) {	//10 minutes in ms
+		values.forEach(function(entry){
+			$rootScope.chartdata.push(entry.value);
+		});
+		$rootScope.chartlabels = ["24hrs ago", "", "", "", "", "20hrs ago", "", "", "", "", "16hrs ago", "", "", "", "", "12hrs ago", "", "", "", "", "8hrs ago",  "", "", "", "","1hr ago", "", "", "", "", "just now"];
+	}
+	else if (range == 900000) {	//15 minutes in ms
+		values.forEach(function(entry){
+			$rootScope.chartdata.push(entry.value);
+		});
+		$rootScope.chartlabels = ["3d ago", "", "", "", "", "", "", "", "", "2d ago", "", "", "", "", "", "", "", "", "1d ago", "", "", "", "", "", "", "", "", "", "just now"];
+	}
 	};
 
 	//real time DOM manipulation, according to the incoming messages

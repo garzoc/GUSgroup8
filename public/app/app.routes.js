@@ -17,6 +17,10 @@ angular.module('app.routes', ['ngRoute'])
 			templateUrl : 'app/views/pages/sensors.html'
 
 		})
+		// route for the details-chart page
+		.when('/details', {
+			templateUrl : 'app/views/pages/details.html'
+		})
 
 		// login page
 		.when('/login', {

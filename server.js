@@ -1,5 +1,5 @@
 //
-//	Authors 		: Ioannis Gkikas
+//	Authors 		: Ioannis Gkikas, John Sundling
 //	Description : The main server file. Using the node.js infrastructure, this file can be run in a V8 Virtual Machine.
 //								all the WebServer components are imported and initialised here.The main thread starts here, as well
 //								as the event loop.It is the equivalent of the void Main() function of JAVA applications
@@ -22,6 +22,8 @@ var bodyParser     = require('body-parser');
 var config = require('./config');
 // Importing and initiating the websockets server
 var server = require('./app/modules/sockets.js').init(config.socketsPortFE,config.socketsPortBE);
+// Optional testing Suite
+//var test = require('./testing/testSuite.js');
 // Initialising the express framework for handling the routing
 var app = express();
 //bodyparser setup
@@ -51,7 +53,7 @@ app.use(function(req, res, next) {
 });
 
 //connect to our database
-mongoose.connect('mongodb://localhost:27017/test');
+mongoose.connect(config.database);
 
 //set static files location
 //that are used for frontend (like images,views,libs)
@@ -73,9 +75,11 @@ app.get('*', function(req, res) {
 // Start listening for HTTP traffic
 app.listen(config.httpPort);
 
+//testing init
+//test.startTest();
 
-var modJoin=new Object;
-modJoin.serverId=0;
+// from here on, what does all this do and why do we still need it
+
 
 var modInit=new Object;
 modInit.name="test";
@@ -83,10 +87,8 @@ modInit.type="package";
 
 var client=server.dummy();
 var client1=server.dummy();
-client.send("hej");
-client1.send("hej1");
-console.log(client);
-console.log(client1);
+
 server.initProcess(modInit,client);
+//server.leaveProcess(client);
 //server.msgRelay('{"hej":"pa dig"}',client);
 //server.joinProcess(modJoin,client1);

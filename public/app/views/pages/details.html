@@ -1,0 +1,11 @@
+<div class="jumbotron">
+  <h2>Sensor details for {{selectedSensor}}</h2>
+      <canvas id="line" class="chart chart-line" chart-data="chartdata"
+        chart-labels="chartlabels" chart-series="chartseries" chart-options="chartoptions"
+        chart-dataset-override="chartdatasetOverride" chart-click="chartClick">
+      </canvas>
+      <a href="#" ng-click="main.getSensor(selectedSensor,300000)">Last hour</a>
+      <a href="#" ng-click="main.getSensor(selectedSensor,600000)">Last 24 hours</a>
+      <a href="#" ng-click="main.getSensor(selectedSensor,900000)">Last week</a>
+
+</div>

@@ -37,7 +37,14 @@ module.exports={
 
 
 		var tcpServer=net.createServer(function(socket) {
-			
+			//socket.write('Echo server\r\n');
+			//socket.pipe(socket);
+			//socket.write("ten");
+			/*socket.on('connect',function(message){
+				console.log("hak");
+
+
+			});*/
 			socket.api=server.interface();
 			console.log("user connected on tcp line");
 			socket.send=function(message){

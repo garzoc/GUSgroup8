@@ -99,10 +99,15 @@ module.exports = function(){
 			}
 
 			if(processList[stats.serverId].clients.length===0){//if server is out of client then delete remove the module
-				console.log("closing server "+processList[stats.serverId].name);
+				if(typeof(processList[stats.serverId].module["onShutdown"]) === "function"){//call the on shutdown functoins funcion [NOT TESTED!!!!]
+					processList[stats.serverId].module["onShutdown"](json.cloneObject(client));
+				}else{
+					console.log("missing onShutdown funcion");
+				}
+				console.log("closing process "+processList[stats.serverId].name);
 				processList.splice(stats.serverId,1);
-				console.log("serveris is   "+stats.serverId);
-				console.log("server length  is   "+processList.length);
+				//console.log("serveris is   "+stats.serverId);
+				//console.log("server length  is   "+processList.length);
 				try{
 					for(var i=stats.serverId;i<processList.length;i++){//correct the client id if clients in client lists
 						for (var n=0;n<processList[i].clients.length;n++){
@@ -121,17 +126,19 @@ module.exports = function(){
 					console.log("missing onClose funcion");
 				}
 			}
-			stats.inProcess=undefined
+			
+			/*stats.inProcess=undefined
 			stats.staticFunction=undefined;
 			stats.localId=undefined;
 			stats.serverId=undefined;
-			stats.verfication=undefined;
+			stats.verfication=undefined;*/
+			//client.api=new Interface(0);
 
 		}
-		
-		for(k in client.api.getStat()){
+		client.api=new Interface(0);
+		/*for(k in client.api.getStat()){
 			client.api.getStat()[k]=undefined;
-		}
+		}*/
 	}
 
 
@@ -153,7 +160,7 @@ module.exports = function(){
 
   //message processor==============================================0
 	this.decode=function(stringData){
-		console.log(stringData);
+		//console.log(stringData);
 		//var packetStruct=stringData.split("::");
 	
 		
