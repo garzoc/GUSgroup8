@@ -75,6 +75,8 @@ app.get('*', function(req, res) {
 // Start listening for HTTP traffic
 app.listen(config.httpPort);
 
+
+console.log("webserver listening on port "+config.httpPort);
 //testing init
 //test.startTest();
 

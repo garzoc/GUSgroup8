@@ -4,9 +4,9 @@
 //
 
 module.exports = {
-	'httpPort': process.env.PORT || 8080,
-	'socketsPortFE': 8000,
-	'socketsPortBE': 1338, 
+	'httpPort': process.env.PORT || 41372,
+	'socketsPortFE': 22759,
+	'socketsPortBE': 14327, 
 	'database': 'mongodb://localhost:27017/test',
 	'secret': 'gusgroup8'
 };

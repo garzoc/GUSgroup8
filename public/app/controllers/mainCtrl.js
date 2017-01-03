@@ -31,7 +31,7 @@ angular.module('mainCtrl', ['chart.js'])
 		if($location.url()==="/sensors"){
 			//console.log("yoyo  "+socket);
 			if(socket===undefined){
-			socket=new WebSocket("ws://127.0.0.1:8000/");
+			socket=new WebSocket("ws://127.0.0.1:22759/");
 			socket.onopen=function(e){
 				console.log("Establishing contact");
 				socket.send('{"use":"joinProcess","context":{"serverId" : 0}}');

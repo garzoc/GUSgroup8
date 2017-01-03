@@ -69,7 +69,7 @@ module.exports={
 			//console.log("hello");
 		});
 
-		console.log("server running on port "+socketPort);
+		console.log("websockets listening on port "+socketPort);
 
 
 
