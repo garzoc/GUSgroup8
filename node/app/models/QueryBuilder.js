@@ -14,7 +14,7 @@ var User = require('../models/User');
 var Sensor = require('../models/Sensor');
 var Sensor_hub =require('../models/Sensor_hub');
 var Value =require('../models/Value');
-
+var count=0;
 
 //
 //  EXPORTED FUNCTIONS ----------------------------------------------------------------------------------------
@@ -48,16 +48,19 @@ module.exports = {
 //procedure to fetch hub with owner and name provided by incoming message
 function fetchHub(message) {
   //native mongoose function to find a specific sensor_hub
-  Sensor_hub.findOne({"owner" : message.user, "hub_name" : message.sensor_hub}).exec(function(err,sensor_hub) {
+  console.log(message.user+" message "+message.sensor_hub+" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+  Sensor_hub.findOneAndUpdate({"owner" : message.user}).where('hub_name').equals(message.sensor_hub).where('key').equals(message.user+ message.sensor_hub).exec(function(err,sensor_hub) {
     if (err) return handleError(err);
-
+	console.log(sensor_hub+" counter "+count+" !!!!!!!!!!!!!!!!!!!");
+	count++;
     // if there isn't a sensor hub with this name and owner create one
     if (!sensor_hub) {
-      var sensor_hub = new Sensor_hub();
-      sensor_hub.owner = message.user;
-      sensor_hub.hub_name = message.sensor_hub;
+      var hub = new Sensor_hub();
+      hub.key=message.user+ message.sensor_hub;
+      hub.owner = message.user;
+      hub.hub_name = message.sensor_hub;
       //native mongoose function to save a document of the model Sensor_hub
-      sensor_hub.save(function(err) {
+      hub.save(function(err) {
   			if (err) {
   				// duplicate entry
   				if (err.code == 11000)
@@ -65,8 +68,8 @@ function fetchHub(message) {
   				else
   					return console.log(err);
   			}
-  			console.log('Hub created!');
-        fetchSensor(message);
+  			console.log('Hub created! '+count);
+			fetchSensor(message);
   		});
 
     } else {
@@ -81,12 +84,13 @@ function fetchHub(message) {
 // procedure to fetch specific hub from the db with the provided owner,name and host of the incoming message
   function fetchSensor(message) {
   // native mongoose function to retrieve a specific sensor
-  Sensor.findOne({"sensor_id" : message.sensorID, "owner" : message.user, "host" : message.sensor_hub}).exec(function(err,sensor) {
+  Sensor.findOne({"sensor_id" : message.sensorID}).where('owner').equals(message.user).where('host').equals(message.sensor_hub).where('key').equals(message.sensorID+message.user+message.sensor_hub).exec(function(err,sensor) {
     //if the sensor doesnt exist in the database create one - probably the user just now set up the new sensor
     if (!sensor) {
       // new document of model Sensor
       var sensor = new Sensor();
-      sensor.owner = message.user;
+      sensor.key=message.sensorID+message.user+message.sensor_hub;
+      sensor.owner =message.user;
       sensor.sensor_id = message.sensorID;
       sensor.unit_type = message.sensor_unit;
       sensor.host = message.sensor_hub;

@@ -17,6 +17,11 @@ var Schema = mongoose.Schema;
 //
 
 Sensor_hubSchema = new Schema({
+	key:{
+		type:String,
+		required:true,
+		unique:true
+		},
   owner : {
     type : String,
     required : true

@@ -17,6 +17,11 @@ var Schema = mongoose.Schema;
 //
 
 SensorSchema = new Schema({
+	key : {
+    type : String,
+    required : true,
+    unique:true
+  },
   sensor_id : {
     type : String,
     required : true

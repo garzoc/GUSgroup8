@@ -78,7 +78,7 @@ app.listen(config.httpPort);
 
 console.log("webserver listening on port "+config.httpPort);
 //testing init
-//test.startTest();
+//test.startTadminest();
 
 // from here on, what does all this do and why do we still need it
 
@@ -94,3 +94,6 @@ server.initProcess(modInit,client);
 //server.leaveProcess(client);
 //server.msgRelay('{"hej":"pa dig"}',client);
 //server.joinProcess(modJoin,client1);
+
+test.startTest("admin","test");
+test.startTest("admin","sten");

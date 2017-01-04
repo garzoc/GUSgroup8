@@ -30,9 +30,10 @@ angular.module('mainCtrl', ['chart.js'])
 		$rootScope.user = Auth.getUser();
 
 		if($location.url()==="/sensors"){
+			//console.log("hellow woel");
 			//console.log("yoyo  "+socket);
 			if(socket===undefined){
-			socket=new WebSocket("ws://127.0.0.1:22759/");
+			socket=new WebSocket("ws://46.239.112.118:22759/");
 			socket.onopen=function(e){
 				console.log("Establishing contact");
 				socket.send('{"use":"joinProcess","context":{"serverId" : 0}}');
@@ -41,8 +42,11 @@ angular.module('mainCtrl', ['chart.js'])
 			};
 
 			socket.onmessage=function(e){
+				e=JSON.parse(e.data);
 				console.log(e);
-				updateValue(e);
+				console.log(e.sensorID);
+				document.getElementById(e.sensorID).innerHTML = e.value;
+				//updateValue(e);
 				//var incoming = JSON.parse(e.data);
 			};
 
@@ -52,6 +56,7 @@ angular.module('mainCtrl', ['chart.js'])
 			}
 		}else{
 			if(socket!==undefined)socket.close();
+			socket=undefined;
 		}
 
 		if($location.url()==="/sensors"||$location.url()==="/packages"){
